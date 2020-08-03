@@ -27,22 +27,47 @@ export default {
     //     ]
     //   }
     // ]
-    user: {}
+    user: {},
+    nameAndPhoto: []
   },
   getters: {
     info (state) {
       return state.user
     }
   },
-  mutations: {},
-  actions: {
-    async register ({ commit }, { user }) {
-      console.log(user)
+  mutations: {
+    getInfo (state, payload) {
+      state.user = payload
     },
-    async login ({ commit }, payload) {
+    logOut (state) {
+      state.user = {}
+    }
+  },
+  actions: {
+    async register ({ dispatch, commit }, payload) {
       try {
-        const admin = await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-        commit('setAdmin', { id: admin.user.uid })
+        const user = payload
+        await firebase.auth().createUserWithEmailAndPassword(user.email, user.pass)
+        const uid = await dispatch('getUid')
+        delete user.pass
+        await firebase.database().ref(`/users/${uid}/`).set(user)
+        const fileName = user.avatar.name
+        const ext = fileName.slice(fileName.lastIndexOf('.'))
+        const storages = await firebase.storage().ref(`users/${uid}/avatar/img${ext}`).put(user.avatar)
+        const imageUrl = await storages.ref.getDownloadURL()
+        user.avatar.url = imageUrl
+        user.avatar.ext = ext
+        await firebase.database().ref('users').child(uid).update({ avatar: user.avatar })
+      } catch (error) {
+        console.log(error)
+        throw error
+        // добавить вывод ошибок в modal
+      }
+    },
+    async login ({ dispatch, commit }, payload) {
+      try {
+        await firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
+        await dispatch('getInfo')
       } catch (error) {
         // error logic here
         console.log(error)
@@ -51,12 +76,26 @@ export default {
     },
     getUid ({ commit }) {
       const user = firebase.auth().currentUser
-      commit('setAdmin', { id: user.uid })
       return user ? user.uid : null
+    },
+    async getInfo ({ dispatch, commit }) {
+      try {
+        const uid = await dispatch('getUid')
+        if (uid !== null) {
+          const data = (await firebase.database().ref('users').child(uid).once('value')).val()
+          const user = {
+            ...data,
+            id: uid
+          }
+          commit('getInfo', user)
+        }
+      } catch (error) {
+        console.log(error)
+      }
     },
     async logOut ({ commit }) {
       await firebase.auth().signOut()
-      commit('setAdmin', null)
+      commit('logOut')
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <div>edy cat</div>
 </template>
 
 <script>

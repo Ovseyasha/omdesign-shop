@@ -1,8 +1,10 @@
 <template>
   <v-app id="inspire">
+    <Messager :message="msg"></Messager>
     <v-main>
       <v-container class="fill-height" fluid>
-        <v-row align="center" justify="center">
+        <Loader v-if="loading" />
+        <v-row v-else align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
             <v-card class="elevation-12" tile>
               <v-toolbar color="primary" dark flat>
@@ -125,9 +127,12 @@
 <script>
 import { required, email, minLength } from 'vuelidate/lib/validators'
 import ChangeImg from '@/components/app/ChangeImg'
+import Messager from '@/components/app/Messager'
 export default {
   data () {
     return {
+      loading: false,
+      error: '',
       email: '',
       pass: '',
       sex: '',
@@ -146,7 +151,9 @@ export default {
         building: '',
         apartament: '',
         wishList: '',
-        ListOrder: []
+        rules: 'user',
+        listOrder: '',
+        reviews: ''
       }
     }
   },
@@ -192,6 +199,9 @@ export default {
       if (!this.$v.name.$dirty) return errors
       !this.$v.name.required && errors.push('Введите имя')
       return errors
+    },
+    msg () {
+      return this.error
     }
   },
   methods: {
@@ -201,26 +211,30 @@ export default {
     async reg () {
       if (this.$v.$invalid) {
         this.$v.$touch()
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        })
         return false
       }
       try {
+        this.loading = true
         this.user.email = this.email
         this.user.pass = this.pass
         this.user.sex = this.sex
         this.user.name = this.name
-        console.log(this.user)
-        // const formData = {
-        //   email: this.email,
-        //   password: this.pas
-        // }
-        // await this.$store.dispatch('user/login', formData)
-        // this.$router.push('/')
+        await this.$store.dispatch('users/register', this.user)
+        this.loading = false
+        this.$router.push('/')
       } catch (error) {
+        this.error = error.code
+        this.loading = false
       }
     }
   },
   components: {
-    ChangeImg
+    ChangeImg,
+    Messager
   }
 }
 </script>

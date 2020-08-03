@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <div>editProfile</div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <div>add cat</div>
 </template>
 
 <script>

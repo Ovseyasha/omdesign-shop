@@ -1,8 +1,10 @@
 <template>
   <v-app id="inspire">
+    <Messager :message="msg"></Messager>
     <v-main>
       <v-container class="fill-height" fluid>
-        <v-row align="center" justify="center">
+        <Loader v-if="loading" />
+        <v-row v-else align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
             <v-card class="elevation-12" tile>
               <v-toolbar color="primary" dark flat>
@@ -62,9 +64,12 @@
 
 <script>
 import { required, email, minLength } from 'vuelidate/lib/validators'
+import Messager from '@/components/app/Messager'
 export default {
   data () {
     return {
+      loading: false,
+      error: '',
       email: '',
       pass: ''
     }
@@ -93,6 +98,9 @@ export default {
       !this.$v.pass.minLength && errors.push('Количество символов слишком мало')
       !this.$v.pass.required && errors.push('Введите пароль')
       return errors
+    },
+    msg () {
+      return this.error === '' ? this.$route.query.message : this.error
     }
   },
   methods: {
@@ -102,16 +110,22 @@ export default {
         return false
       }
       try {
-        console.log(this.email, this.pass)
-        // const formData = {
-        //   email: this.email,
-        //   password: this.pas
-        // }
-        // await this.$store.dispatch('user/login', formData)
-        // this.$router.push('/')
+        this.loading = true
+        const formData = {
+          email: this.email,
+          password: this.pass
+        }
+        await this.$store.dispatch('users/login', formData)
+        this.loading = false
+        this.$router.push('/')
       } catch (error) {
+        this.error = error.code
+        this.loading = false
       }
     }
+  },
+  components: {
+    Messager
   }
 }
 </script>

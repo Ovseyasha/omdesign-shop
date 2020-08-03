@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <div>checkout</div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <div>add blog</div>
 </template>
 
 <script>

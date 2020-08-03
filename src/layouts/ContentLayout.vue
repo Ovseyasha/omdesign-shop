@@ -22,31 +22,37 @@
     <v-app-bar app clipped height="100px" fixed class="nav">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-container>
-        <v-row justify="space-around" align="center">
-          <div class="nav-logo">
+        <v-row align="center">
+          <v-col cols="9" class="nav-logo">
             <img :src="require('@/assets/logo.png')" alt="logo" title="OMDESIGN" />
             <h1 class="nav-title">
               МАГАЗИН
               <br />АВТОРСКИХ ПРИНТОВ
             </h1>
-          </div>
-          <v-spacer></v-spacer>
+          </v-col>
+          <!-- <v-spacer></v-spacer> -->
 
-          <v-btn icon>
-            <router-link to="/login">
-              <v-icon color="accent">mdi-login</v-icon>
+          <v-col cols="3">
+            <router-link to="/login" v-if="!isLogin">
+              <v-btn icon>
+                <v-icon color="accent">mdi-login</v-icon>
+              </v-btn>
             </router-link>
-          </v-btn>
-          <v-btn icon>
-            <v-icon>mdi-cart</v-icon>
-          </v-btn>
-          <!-- только если ползователь вошел  -->
-          <!-- <v-avatar>
-            <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
-          </v-avatar>
-          <v-btn icon>
-            <v-icon>mdi-logout</v-icon>
-          </v-btn>-->
+            <router-link v-if="isLogin" to="/account">
+              <v-avatar>
+                <img :src="userAvatar" :alt="user.name" title="Личный кабинет" />
+              </v-avatar>
+            </router-link>
+            <router-link to="/cart" class="mx-5">
+              <v-btn icon title="Корзина">
+                <v-icon color="accent">mdi-cart</v-icon>
+              </v-btn>
+            </router-link>
+
+            <v-btn icon v-if="isLogin" title="Выход" class="mr-15" @click="logout">
+              <v-icon color="accent">mdi-logout</v-icon>
+            </v-btn>
+          </v-col>
         </v-row>
       </v-container>
 
@@ -73,6 +79,8 @@ export default {
   async mounted () {
     // ПОТОМ взывать диспатч с сервера
     this.categories = await this.$store.getters['category/categories']
+    await this.$store.dispatch('users/getInfo')
+    this.user = this.$store.getters['users/info']
     this.loading = false
   },
   data () {
@@ -101,12 +109,31 @@ export default {
           link: '/discounts'
         }
       ],
-      categories: []
+      categories: [],
+      user: {}
+    }
+  },
+  computed: {
+    userAvatar () {
+      return this.user.avatar?.url
+    },
+    isLogin () {
+      return Object.keys(this.user).length !== 0
     }
   },
   methods: {
     goTo (link) {
       this.$router.push(link)
+    },
+    async logout () {
+      try {
+        this.loading = true
+        await this.$store.dispatch('users/logOut')
+        this.user = {}
+        this.loading = false
+      } catch (error) {
+
+      }
     }
   },
   components: {
@@ -129,7 +156,6 @@ export default {
   }
 }
 .nav-logo {
-  margin-left: 5%;
   display: flex;
   justify-content: center;
   align-items: center;
