@@ -30,8 +30,6 @@
               <br />АВТОРСКИХ ПРИНТОВ
             </h1>
           </v-col>
-          <!-- <v-spacer></v-spacer> -->
-
           <v-col cols="3">
             <router-link to="/login" v-if="!isLogin">
               <v-btn icon>
@@ -45,7 +43,9 @@
             </router-link>
             <router-link to="/cart" class="mx-5">
               <v-btn icon title="Корзина">
-                <v-icon color="accent">mdi-cart</v-icon>
+                <v-badge color="secondary" :content="countInCart" :value="countInCart">
+                  <v-icon color="accent">mdi-cart</v-icon>
+                </v-badge>
               </v-btn>
             </router-link>
 
@@ -78,6 +78,7 @@
 export default {
   async mounted () {
     // ПОТОМ взывать диспатч с сервера
+    await this.$store.dispatch('cart/loadCart', this.isLogin)
     this.categories = await this.$store.getters['category/categories']
     await this.$store.dispatch('users/getInfo')
     this.user = this.$store.getters['users/info']
@@ -118,7 +119,10 @@ export default {
       return this.user.avatar?.url
     },
     isLogin () {
-      return Object.keys(this.user).length !== 0
+      return this.$store.getters['users/getUid'] !== null
+    },
+    countInCart () {
+      return this.$store.getters['cart/count']
     }
   },
   methods: {
@@ -129,6 +133,8 @@ export default {
       try {
         this.loading = true
         await this.$store.dispatch('users/logOut')
+        await this.$store.commit('cart/updCart', [])
+        await this.$store.dispatch('cart/loadCart', this.isLogin)
         this.user = {}
         this.loading = false
       } catch (error) {

@@ -87,91 +87,91 @@ const routes = [
   {
     path: '/admin',
     name: 'AdminMain',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Main.vue')
   },
   {
     path: '/admin/products',
     name: 'AdminProducts',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Products/List.vue')
   },
   {
     path: '/admin/products/add',
     name: 'AdminProductsAdd',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Products/Add.vue')
   },
   {
     path: '/admin/products/edit/:id',
     name: 'AdminProductsEdit',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Products/Edit.vue')
   },
   {
     path: '/admin/categories',
     name: 'AdminCategories',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Categories/List.vue')
   },
   {
     path: '/admin/categories/add',
     name: 'AdminCategoriesAdd',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Categories/Add.vue')
   },
   {
     path: '/admin/categories/edit/:id',
     name: 'AdminCategoriesEdit',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Categories/Edit.vue')
   },
   {
     path: '/admin/orders',
     name: 'AdminOrders',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Orders/List.vue')
   },
   {
     path: '/admin/orders/view/:id',
     name: 'AdminOrdersView',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Orders/View.vue')
   },
   {
     path: '/admin/blog',
     name: 'AdminBlog',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Blog/List.vue')
   },
   {
     path: '/admin/blog/add',
     name: 'AdminBlogAdd',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Blog/Add.vue')
   },
   {
     path: '/admin/blog/edit/:id',
     name: 'AdminBlogEdit',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Blog/Edit.vue')
   },
   {
     path: '/admin/discounts',
     name: 'AdminDiscounts',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Discounts/List.vue')
   },
   {
     path: '/admin/discounts',
     name: 'AdminDiscountsAdd',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Discounts/Add.vue')
   },
   {
     path: '/admin/discounts/edit/:id',
     name: 'AdminDiscountsEdit',
-    meta: { layout: 'admin', auth: true },
+    meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Discounts/Edit.vue')
   }
 ]
@@ -182,12 +182,20 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const currentUser = firebase.auth().currentUser
+  const rules = currentUser ? ((await firebase.database().ref('users').child(currentUser.uid).once('value')).val()).rules : ''
   // проверка есть ли у путя тег мета с требование авторизации
   const reuireAuth = to.matched.some(record => record.meta.auth)
   if (reuireAuth && !currentUser) {
     next('/login?message=login')
+  } else {
+    next()
+  }
+  const isAdmin = rules === 'admin'
+  const checkAdmin = to.matched.some(record => record.meta.admin)
+  if (checkAdmin && !isAdmin) {
+    next('/')
   } else {
     next()
   }

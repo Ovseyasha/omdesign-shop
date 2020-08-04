@@ -3,6 +3,7 @@ import App from './App.vue'
 import './registerServiceWorker'
 import VueMeta from 'vue-meta'
 import Vuelidate from 'vuelidate'
+import VueCookie from 'vue-cookie'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
@@ -22,6 +23,7 @@ Vue.component('Loader', Loader)
 // init plugins
 Vue.use(VueMeta)
 Vue.use(Vuelidate)
+Vue.use(VueCookie)
 // filters
 Vue.filter('ucFirst', ucFirst)
 Vue.filter('price', price)

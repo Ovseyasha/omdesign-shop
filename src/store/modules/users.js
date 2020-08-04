@@ -2,37 +2,16 @@ import firebase from 'firebase/app'
 export default {
   namespaced: true,
   state: {
-    // users: [
-    //   {
-    //     id: 1,
-    //     email: 'admin@mail.ru',
-    //     pass: 123,
-    //     name: 'admin',
-    //     SurName: 'adminovich',
-    //     city: 'ivanteevka',
-    //     sex: 'male',
-    //     dataBirth: '14.12.1999',
-    //     phone: '89015177656',
-    //     street: 'chleb',
-    //     building: 23,
-    //     apartament: 21,
-    //     wishList: [
-    //       // productIds
-    //       1, 2, 5
-    //     ],
-    //     listOrders: [
-    //       {
-    //         // order
-    //       }
-    //     ]
-    //   }
-    // ]
     user: {},
-    nameAndPhoto: []
+    nameAndPhoto: [],
+    getUid: null
   },
   getters: {
     info (state) {
       return state.user
+    },
+    getUid (state) {
+      return state.getUid
     }
   },
   mutations: {
@@ -41,6 +20,10 @@ export default {
     },
     logOut (state) {
       state.user = {}
+      state.getUid = null
+    },
+    getUid (state, payload) {
+      state.getUid = payload
     }
   },
   actions: {
@@ -58,6 +41,7 @@ export default {
         user.avatar.url = imageUrl
         user.avatar.ext = ext
         await firebase.database().ref('users').child(uid).update({ avatar: user.avatar })
+        commit('getUid', uid)
       } catch (error) {
         console.log(error)
         throw error
@@ -76,6 +60,7 @@ export default {
     },
     getUid ({ commit }) {
       const user = firebase.auth().currentUser
+      commit('getUid', user ? user.uid : null)
       return user ? user.uid : null
     },
     async getInfo ({ dispatch, commit }) {
@@ -89,8 +74,36 @@ export default {
           }
           commit('getInfo', user)
         }
+        commit('getUid', uid)
       } catch (error) {
         console.log(error)
+        throw error
+      }
+    },
+    async addToWishList ({ dispatch, commit }, payload) {
+      try {
+        const uid = await dispatch('getUid')
+        const updWishList = (await firebase.database().ref(`users/${uid}/wishList`).once('value')).val() || []
+        updWishList.push(payload)
+        // console.log(updWishList)
+        await firebase.database().ref('users').child(uid).update({ wishList: updWishList })
+        await dispatch('getInfo')
+      } catch (error) {
+        console.log(error)
+        throw error
+      }
+    },
+    async deleteToWishList ({ dispatch, commit }, payload) {
+      try {
+        const uid = await dispatch('getUid')
+        const updWishList = (await firebase.database().ref(`users/${uid}/wishList`).once('value')).val()
+        const index = updWishList.findIndex(id => id === payload)
+        updWishList.splice(index, 1)
+        await firebase.database().ref('users').child(uid).update({ wishList: updWishList })
+        await dispatch('getInfo')
+      } catch (error) {
+        console.log(error)
+        throw error
       }
     },
     async logOut ({ commit }) {

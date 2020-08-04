@@ -55,7 +55,7 @@
             >{{sub}}</p>
           </v-col>
           <v-col class="px-0">
-            <v-btn large color="secondary" :tile="true">В корзину</v-btn>
+            <BtnForCart :id="product.id" />
           </v-col>
         </v-row>
       </v-col>
@@ -130,8 +130,13 @@
 </template>
 
 <script>
+import BtnForCart from '@/components/app/BtnForCart'
 export default {
   async mounted () {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
     // Диспатч в стаейт с сервера
     this.product = await this.$store.getters['products/productById'](this.$route.params.id)
     this.loading = false
@@ -151,6 +156,9 @@ export default {
 
       return sum / count
     }
+  },
+  components: {
+    BtnForCart
   }
 }
 </script>
