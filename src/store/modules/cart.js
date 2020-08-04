@@ -22,7 +22,7 @@ export default {
   actions: {
     async loadCart ({ dispatch, commit }, payload) {
       try {
-        if (payload.isLogin) {
+        if (payload) {
           const id = await store.dispatch('users/getUid')
           const products = (await firebase.database().ref(`users/${id}/productInCart`).once('value')).val()
           console.log(products)

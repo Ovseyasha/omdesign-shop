@@ -79,7 +79,7 @@ export default {
   async mounted () {
     // ПОТОМ взывать диспатч с сервера
     await this.$store.dispatch('cart/loadCart', this.isLogin)
-    this.categories = await this.$store.getters['category/categories']
+    await this.$store.dispatch('category/read')
     await this.$store.dispatch('users/getInfo')
     this.user = this.$store.getters['users/info']
     this.loading = false
@@ -110,7 +110,6 @@ export default {
           link: '/discounts'
         }
       ],
-      categories: [],
       user: {}
     }
   },
@@ -123,6 +122,9 @@ export default {
     },
     countInCart () {
       return this.$store.getters['cart/count']
+    },
+    categories () {
+      return this.$store.getters['category/categories']
     }
   },
   methods: {
@@ -136,6 +138,7 @@ export default {
         await this.$store.commit('cart/updCart', [])
         await this.$store.dispatch('cart/loadCart', this.isLogin)
         this.user = {}
+        this.$router.push('/')
         this.loading = false
       } catch (error) {
 

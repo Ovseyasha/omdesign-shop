@@ -1,36 +1,8 @@
+import firebase from 'firebase/app'
 export default {
   namespaced: true,
   state: {
-    categories: [
-      {
-        id: 1,
-        name: 'Футболки'
-      },
-      {
-        id: 2,
-        name: 'Сумки'
-      },
-      {
-        id: 3,
-        name: 'Подушки'
-      },
-      {
-        id: 4,
-        name: 'Кружки'
-      },
-      {
-        id: 5,
-        name: 'Холсты'
-      },
-      {
-        id: 6,
-        name: 'Постеры'
-      },
-      {
-        id: 7,
-        name: 'Шторы для душа'
-      }
-    ]
+    categories: []
   },
   getters: {
     categories (state) {
@@ -42,6 +14,35 @@ export default {
     //   })
     // }
   },
-  mutations: {},
-  actions: {}
+  mutations: {
+    read (state, payload) {
+      state.categories = payload
+    }
+  },
+  actions: {
+    async create ({ dispatch, commit, state }, payload) {
+      try {
+        await firebase.database().ref('categories').push(payload)
+        await dispatch('read')
+      } catch (error) {
+
+      }
+    },
+    async read ({ dispatch, commit, state }, payload) {
+      const cat = (await firebase.database().ref('categories').once('value')).val()
+      const categories = []
+      if (cat !== null) {
+        Object.keys(cat).forEach(key => {
+          const c = cat[key]
+          categories.push({
+            name: c,
+            id: key
+          })
+        })
+      }
+      commit('read', categories)
+    },
+    update () { },
+    delete () { }
+  }
 }
