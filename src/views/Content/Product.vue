@@ -175,11 +175,6 @@ export default {
     }
   },
   computed: {
-    // changeSized () {
-    //   const productInCart = this.$store.getters['cart/products']
-    //   console.log(productInCart)
-    //   return productInCart.find(p => p.id === this.$route.params.id).selectedSize || 1
-    // },
     summarScore () {
       let answer = 0
       if (this.product.feedback) {

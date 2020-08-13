@@ -8,6 +8,8 @@ import blog from './modules/blog'
 import about from './modules/about'
 import discounts from './modules/discounts'
 import users from './modules/users'
+import orders from './modules/orders'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -18,6 +20,7 @@ export default new Vuex.Store({
     blog,
     about,
     discounts,
-    users
+    users,
+    orders
   }
 })

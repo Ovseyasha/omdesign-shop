@@ -4,7 +4,8 @@ import VueCookie from 'vue-cookie'
 export default {
   namespaced: true,
   state: {
-    products: []
+    products: [],
+    total: {}
   },
   getters: {
     products (state) {
@@ -14,6 +15,9 @@ export default {
       if (state.products) {
         return state.products.length
       }
+    },
+    total (state) {
+      return state.total
     }
   },
   mutations: {
@@ -22,6 +26,9 @@ export default {
     },
     loadCart (state, payload) {
       state.products = payload
+    },
+    total (state, payload) {
+      state.total = payload
     }
   },
   actions: {
@@ -77,6 +84,14 @@ export default {
           VueCookie.set('productInCart', JSON.stringify(state.products), 1)
         }
         await dispatch('updCart', state.products)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async clearCart ({ dispatch, commit, state }, payload) {
+      try {
+        const id = await store.dispatch('users/getUid')
+        await firebase.database().ref(`users/${id}/productInCart`).remove()
       } catch (error) {
         console.log(error)
       }

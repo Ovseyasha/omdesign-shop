@@ -8,68 +8,6 @@
           <v-btn color="primary" tile>Перейти к покупкам</v-btn>
         </router-link>
       </v-card-subtitle>
-
-      <!-- <v-simple-table v-else>
-        <template>
-          <tbody>
-            <tr v-for="product in products" :key="product.id" class="cart__col font-weight-light">
-              <td>
-                <router-link :to="`/product/${product.id}`">
-                  <v-img :src="product.photos[0].img" width="150px" class="mb-5 mt-5"></v-img>
-                </router-link>
-              </td>
-              <td>
-                <router-link :to="`/product/${product.id}`" class="cart__color">
-                  <h1 class="font-weight-light">{{product.name}}</h1>
-                </router-link>
-
-                <p>{{product.category | ucFirst}}</p>
-              </td>
-              <td>
-                <v-select
-                  v-if="product.selectedSize"
-                  ref="select1"
-                  :items="product.sizes"
-                  :value="product.selectedSize"
-                  @change="changeSize(product.id, $event)"
-                  label="Размер"
-                ></v-select>
-                <v-select
-                  v-else
-                  ref="select2"
-                  :items="product.sizes"
-                  @change="changeSize(product.id, $event)"
-                  label="Размер"
-                ></v-select>
-              </td>
-              <td class="text-h5 font-weight-light">{{ product.price | price}}</td>
-              <td>
-                <v-btn x-large color="secondary" @click="addCount(product.id, product.count)" icon>
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-                <span class="mx-5 text-subtitle-1 font-weight-light">{{product.count }}</span>
-                <v-btn
-                  x-large
-                  color="secondary"
-                  @click="minusCount(product.id, product.count)"
-                  icon
-                  :disabled="product.count === 1"
-                >
-                  <v-icon>mdi-minus</v-icon>
-                </v-btn>
-              </td>
-              <td
-                class="text-h5 font-weight-light secondary--text"
-              >{{ product.price * product.count | price }}</td>
-              <td>
-                <v-btn icon @click="deleteProduct(product.id)" x-large>
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>-->
       <v-row v-else>
         <v-col>
           <v-row
@@ -161,7 +99,7 @@
         x-large
         class="font-weight-light"
         v-if="products.length !== 0"
-      >Оформить заказ</v-btn>
+      >Продолжить оформление заказа</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -239,7 +177,12 @@ export default {
       }
     },
     async checkout () {
-      console.log(this.$store.getters['cart/products'], this.total)
+      try {
+        await this.$store.commit('cart/total', this.total)
+        this.$router.push('/checkout')
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
