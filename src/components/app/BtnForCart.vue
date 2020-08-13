@@ -10,38 +10,45 @@
 <script>
 export default {
   async mounted () {
+    this.isLogin = await this.$store.getters['users/getUid'] !== null
+    await this.$store.dispatch('cart/loadCart', this.isLogin)
     const isset = this.$store.getters['cart/products'].find(product => product.id === this.id)
     if (typeof (isset) !== 'undefined') {
-      console.log(this.inCart)
       this.inCart = true
     }
   },
-  props: ['id'],
+  props: ['id', 'selectedSize'],
   data () {
     return {
-      inCart: false
+      inCart: false,
+      isLogin: '',
+      loading: true
     }
   },
   computed: {
-    isLogin () {
-      return this.$store.getters['users/getUid'] !== null
-    }
   },
   methods: {
-    cartMove () {
-      if (!this.inCart) {
-        this.inCart = !this.inCart
-        this.$store.dispatch('cart/add', {
-          id: this.id,
-          count: 1,
-          isLogin: this.isLogin
-        })
-      } else {
-        this.inCart = !this.inCart
-        this.$store.dispatch('cart/delete', {
-          id: this.id,
-          isLogin: this.isLogin
-        })
+    async cartMove () {
+      try {
+        this.loading = true
+        if (!this.inCart) {
+          this.inCart = !this.inCart
+          await this.$store.dispatch('cart/add', {
+            id: this.id,
+            count: 1,
+            selectedSize: this.selectedSize || null,
+            isLogin: this.isLogin
+          })
+        } else {
+          this.inCart = !this.inCart
+          await this.$store.dispatch('cart/delete', {
+            id: this.id,
+            isLogin: this.isLogin
+          })
+        }
+        this.loading = false
+      } catch (error) {
+        console.log(error)
       }
     }
   }

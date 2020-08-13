@@ -5,7 +5,7 @@
     <v-row justify="center">
       <v-col lg="4">
         <v-carousel class="product__slider" height="auto">
-          <v-carousel-item width="auto" v-for="(item,i) in product.photos" :key="i" :src="item.url"></v-carousel-item>
+          <v-carousel-item width="auto" v-for="(item,i) in product.photos" :key="i" :src="item.img"></v-carousel-item>
         </v-carousel>
       </v-col>
 
@@ -45,7 +45,14 @@
             </v-row>
           </v-col>
           <v-col class="px-0" v-if="product.sizes">
-            <v-select :items="product.sizes" label="Выберите размер"></v-select>
+            <v-select
+              v-if="changeSized"
+              label="Измените размер"
+              :items="product.sizes"
+              :value="changeSized"
+              @change="changeSize(product.id, $event)"
+            ></v-select>
+            <v-select v-else :items="product.sizes" v-model="selectedSize" label="Выберите размер"></v-select>
           </v-col>
           <v-col class="px-0">
             <p
@@ -55,18 +62,24 @@
             >{{sub}}</p>
           </v-col>
           <v-col class="px-0">
-            <BtnForCart :id="product.id" />
+            <BtnForCart :id="product.id" :selectedSize="selectedSize" />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
 
-    <v-row justify="center">
+    <v-row justify="center" class="mt-10">
       <v-col cols="6">
-        <v-badge color="green" :content="product.feedback.length">
-          <h1 class="product__feedback-header text-h4">Отзывы покупателей</h1>
+        <v-badge
+          color="green"
+          :content="product.feedback.length"
+          :value="
+          product.feedback.length"
+          v-if="product.feedback"
+        >
+          <h1 class="product__feedback-header font-weight-light text-h4">Отзывы покупателей</h1>
         </v-badge>
-
+        <h2 v-else class="text-h4 mt-15 font-weight-light">Отзывов ещё нет — ваш может стать первым!</h2>
         <v-row
           class="product__comment"
           v-for="(com,index) in product.feedback"
@@ -138,23 +151,58 @@ export default {
       behavior: 'smooth'
     })
     // Диспатч в стаейт с сервера
+    this.isLogin = await this.$store.getters['users/getUid'] !== null
+    await this.$store.dispatch('products/read')
     this.product = await this.$store.getters['products/productById'](this.$route.params.id)
+    await this.$store.dispatch('cart/loadCart', this.isLogin)
+    const productInCart = this.$store.getters['cart/products']
+    console.log(productInCart)
+    productInCart.find(p => {
+      if (p.id === this.$route.params.id) {
+        this.changeSized = p.selectedSize
+      }
+    })
+    console.log(this.changeSized)
     this.loading = false
   },
   data () {
     return {
       loading: true,
-      product: {}
+      selectedSize: null,
+      product: {},
+      changeSized: null,
+      isLogin: ''
     }
   },
   computed: {
+    // changeSized () {
+    //   const productInCart = this.$store.getters['cart/products']
+    //   console.log(productInCart)
+    //   return productInCart.find(p => p.id === this.$route.params.id).selectedSize || 1
+    // },
     summarScore () {
-      const sum = this.product.feedback.reduce((total, item) => {
-        return total + item.score
-      }, 0)
-      const count = this.product.feedback.length
-
-      return sum / count
+      let answer = 0
+      if (this.product.feedback) {
+        const sum = this.product.feedback.reduce((total, item) => {
+          return total + item.score
+        }, 0)
+        const count = this.product.feedback.length
+        answer = sum / count
+      }
+      return answer
+    }
+  },
+  methods: {
+    async changeSize (id, v) {
+      try {
+        await this.$store.dispatch('cart/changeSize', {
+          id,
+          v,
+          isLogin: this.isLogin
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   components: {

@@ -11,11 +11,16 @@ export default {
       return state.products
     },
     count (state) {
-      return state.products.length
+      if (state.products) {
+        return state.products.length
+      }
     }
   },
   mutations: {
     updCart (state, payload) {
+      state.products = payload
+    },
+    loadCart (state, payload) {
       state.products = payload
     }
   },
@@ -25,7 +30,6 @@ export default {
         if (payload) {
           const id = await store.dispatch('users/getUid')
           const products = (await firebase.database().ref(`users/${id}/productInCart`).once('value')).val()
-          console.log(products)
           await dispatch('updCart', products || [])
         } else {
           if (JSON.parse(VueCookie.get('productInCart'))) {
@@ -42,13 +46,13 @@ export default {
       try {
         const id = await store.dispatch('users/getUid')
         if (id !== null) {
-          firebase.database().ref(`users/${id}/productInCart`).set(payload)
+          await firebase.database().ref(`users/${id}/productInCart`).set(payload)
           commit('updCart', payload)
         } else {
           commit('updCart', payload)
         }
       } catch (error) {
-
+        console.log(error)
       }
     },
     async add ({ dispatch, commit, state }, payload) {
@@ -60,7 +64,7 @@ export default {
         if (!payload.isLogin) {
           VueCookie.set('productInCart', JSON.stringify(state.products), 1)
         }
-        dispatch('updCart', state.products)
+        await dispatch('updCart', state.products)
       } catch (error) {
         console.log(error)
       }
@@ -72,7 +76,7 @@ export default {
         if (!payload.isLogin) {
           VueCookie.set('productInCart', JSON.stringify(state.products), 1)
         }
-        dispatch('updCart', state.products)
+        await dispatch('updCart', state.products)
       } catch (error) {
         console.log(error)
       }
@@ -88,6 +92,22 @@ export default {
           VueCookie.set('productInCart', JSON.stringify(state.products), 1)
         }
         await dispatch('updCart', state.products)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async changeSize ({ dispatch, commit, state }, payload) {
+      try {
+        if (payload.isLogin) {
+          const id = await store.dispatch('users/getUid')
+          const list = (await firebase.database().ref(`users/${id}/productInCart`).once('value')).val()
+          // list.find(p => p.id === payload.id)
+          // console.log(list.find(p => p.id === payload.id))
+          const ind = list.findIndex(p => p.id === payload.id)
+          console.log(ind)
+          await firebase.database().ref(`users/${id}/productInCart/${ind}/selectedSize`).set(payload.v)
+          await dispatch('loadCart', payload.isLogin)
+        }
       } catch (error) {
         console.log(error)
       }

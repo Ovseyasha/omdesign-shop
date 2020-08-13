@@ -78,16 +78,19 @@
 export default {
   async mounted () {
     // ПОТОМ взывать диспатч с сервера
-    await this.$store.dispatch('cart/loadCart', this.isLogin)
-    await this.$store.dispatch('category/read')
+    await this.$store.dispatch('products/read')
     await this.$store.dispatch('users/getInfo')
     this.user = this.$store.getters['users/info']
+    this.isLogin = this.$store.getters['users/getUid'] !== null
+    await this.$store.dispatch('cart/loadCart', this.isLogin)
+    await this.$store.dispatch('category/read')
     this.loading = false
   },
   data () {
     return {
       loading: true,
       drawer: false,
+      isLogin: '',
       tabs: [
         {
           title: 'Главная',
@@ -116,9 +119,6 @@ export default {
   computed: {
     userAvatar () {
       return this.user.avatar?.url
-    },
-    isLogin () {
-      return this.$store.getters['users/getUid'] !== null
     },
     countInCart () {
       return this.$store.getters['cart/count']

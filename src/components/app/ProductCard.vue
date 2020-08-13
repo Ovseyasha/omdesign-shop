@@ -10,7 +10,7 @@
       </v-list-item-content>
     </v-list-item>
     <router-link :to="`/product/${product.id}`">
-      <v-img :src="product.photos[0].url" height="400"></v-img>
+      <v-img :src="product.photos[0].img" height="400"></v-img>
     </router-link>
 
     <v-card-text class="card__prices">

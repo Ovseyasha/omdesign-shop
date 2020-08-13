@@ -43,8 +43,7 @@
                 <SlideEditor :slides="product.photos" @changed="slideChange" />
                 <h2 class="font-weight-light text-center mb-5">Описание</h2>
                 <SubsEditor :subs="product.desc" @change="loadSubs" />
-                <v-btn class="mr-4" @click="submit">Сохранить</v-btn>
-                <v-btn @click="clear">clear</v-btn>
+                <v-btn class="mr-4" @click="submit" tile x-large block>Сохранить</v-btn>
               </form>
             </v-card-actions>
           </v-card-text>
@@ -111,15 +110,18 @@ export default {
     loadSubs (v) {
       this.product.desc = v
     },
-    submit () {
-      this.$v.$touch()
-    },
-    clear () {
-      this.$v.$reset()
-      this.name = ''
-      this.email = ''
-      this.select = null
-      this.checkbox = false
+    async submit () {
+      try {
+        this.loading = true
+        for (const photo of this.product.photos) {
+          delete photo.url
+        }
+        await this.$store.dispatch('products/create', this.product)
+        this.product = {}
+        this.loading = false
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   components: {
