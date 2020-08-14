@@ -1,8 +1,19 @@
 <template>
   <Loader v-if="loading" />
-  <v-carousel v-else class="carousel" height="400" show-arrows-on-hover hide-delimiters>
-    <v-carousel-item v-for="(slide, i) in slides" :key="i" :src="slide.url"></v-carousel-item>
-  </v-carousel>
+  <v-row cols="12" v-else>
+    <v-col cols="12">
+      <v-row>
+        <v-col cols="12">
+          <h1 class="font-weight-thin text-center">Акции</h1>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-carousel show-arrows-on-hover hide-delimiters>
+          <v-carousel-item v-for="(slide, i) in slides" :key="i" :src="slide.url"></v-carousel-item>
+        </v-carousel>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

@@ -1,12 +1,9 @@
 <template>
-  <v-app>
-    <h1 class="main__title">Акции</h1>
+  <v-col cols="12">
     <Discounts></Discounts>
-    <h1 class="main__title">Скидки</h1>
     <SalesProducts></SalesProducts>
-    <h1 class="main__title">Последнии товары</h1>
     <LastProducts></LastProducts>
-  </v-app>
+  </v-col>
 </template>
 
 <script>

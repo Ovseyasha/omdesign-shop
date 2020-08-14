@@ -1,68 +1,117 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer class="category" v-model="drawer" color="primary" absolute>
-      <v-list dense nav class="py-0">
-        <v-list-item two-line :class="'px-0'" style="margin-top: 150px ;">
+    <v-navigation-drawer class="category" v-model="drawer" color="primary" fixed>
+      <v-list dense class="py-0">
+        <v-list-item two-line class="px-0" style="margin-top: 150px ;">
           <h1 class="category-title">Категории</h1>
         </v-list-item>
 
         <v-divider></v-divider>
-        <router-link v-for="item in categories" :key="item.id" :to="`/category/${item.id}`">
-          <v-list-item link>
+        <v-list-item-group>
+          <v-list-item
+            v-for="item in categories"
+            :key="item.id"
+            link
+            @click="goTo(`/category/${item.id}`)"
+          >
             <v-list-item-content>
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
+              <v-list-item-title>{{item.name}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </router-link>
+        </v-list-item-group>
       </v-list>
       <v-divider></v-divider>
       <h1>Сортировка</h1>
     </v-navigation-drawer>
 
-    <v-app-bar app clipped height="100px" fixed class="nav">
+    <v-app-bar app clipped height="100px" fixed>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-container>
-        <v-row align="center">
-          <v-col cols="9" class="nav-logo">
-            <img :src="require('@/assets/logo.png')" alt="logo" title="OMDESIGN" />
-            <h1 class="nav-title">
-              МАГАЗИН
-              <br />АВТОРСКИХ ПРИНТОВ
-            </h1>
+        <v-row align="center" justify="center">
+          <v-col xl="8" lg="8" md="7" cols="5">
+            <v-row justify="center">
+              <v-col xl="7" lg="7" cols="12">
+                <router-link to="/">
+                  <v-img :src="require('@/assets/logo.png')" alt="logo" title="OMDESIGN" />
+                </router-link>
+              </v-col>
+              <v-col xl="4" lg="4" cols="3" class="d-none d-md-none d-sm-none d-lg-flex">
+                <h1 class="font-weight-light text-h6 align-self-center">
+                  МАГАЗИН
+                  <br />АВТОРСКИХ ПРИНТОВ
+                </h1>
+              </v-col>
+            </v-row>
           </v-col>
-          <v-col cols="3">
-            <router-link to="/login" v-if="!isLogin">
-              <v-btn icon>
-                <v-icon color="accent">mdi-login</v-icon>
-              </v-btn>
-            </router-link>
-            <router-link v-if="isLogin" to="/account">
-              <v-avatar>
-                <img :src="userAvatar" :alt="user.name" title="Личный кабинет" />
-              </v-avatar>
-            </router-link>
-            <router-link to="/cart" class="mx-5">
-              <v-btn icon title="Корзина">
-                <v-badge color="secondary" :content="countInCart" :value="countInCart">
-                  <v-icon color="accent">mdi-cart</v-icon>
-                </v-badge>
-              </v-btn>
-            </router-link>
-
-            <v-btn icon v-if="isLogin" title="Выход" class="mr-15" @click="logout">
-              <v-icon color="accent">mdi-logout</v-icon>
-            </v-btn>
+          <v-col xl="2" lg="3" md="3" cols="7" align-self="center">
+            <v-row justify="center" align="center">
+              <v-col cols="4" align="center" v-if="!isLogin">
+                <router-link to="/login">
+                  <v-btn icon title="Войти">
+                    <v-icon color="accent">mdi-login</v-icon>
+                  </v-btn>
+                </router-link>
+                <router-link to="/account"></router-link>
+              </v-col>
+              <v-col cols="4" align="center">
+                <router-link to="/cart">
+                  <v-btn icon title="Корзина">
+                    <v-badge color="secondary" :content="countInCart" :value="countInCart">
+                      <v-icon color="accent">mdi-cart</v-icon>
+                    </v-badge>
+                  </v-btn>
+                </router-link>
+              </v-col>
+              <v-col cols="4" align="center" v-if="isLogin">
+                <v-btn icon title="Выход" @click="logout">
+                  <v-icon color="accent">mdi-logout</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="4" align="center">
+                <v-app-bar-nav-icon @click="menu = !menu"></v-app-bar-nav-icon>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-container>
-
-      <template v-slot:extension>
-        <v-tabs fixed-tabs center-active dark color="secondary">
-          <v-tab class="link" v-for="t in tabs" :key="t.link" @click="goTo(t.link)">{{t.title}}</v-tab>
-        </v-tabs>
-      </template>
     </v-app-bar>
+    <v-navigation-drawer temporary v-model="menu" color="primary" right fixed dark>
+      <v-list dense>
+        <router-link to="/account" title="Личный кабинет" v-if="isLogin">
+          <v-list-item tile two-line class="ml-5 px-0">
+            <v-list-item-avatar>
+              <img :src="userAvatar" />
+            </v-list-item-avatar>
 
+            <v-list-item-content>
+              <v-list-item-title>Здравствуйте</v-list-item-title>
+              <v-list-item-subtitle>{{user.name}}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </router-link>
+        <router-link v-else to="/login">
+          <v-list-item tile two-line>
+            <v-list-item-icon>
+              <v-icon x-large class="mt-5">mdi-account-circle</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>Здравствуйте</v-list-item-title>
+              <v-list-item-subtitle>Войдите в систему</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </router-link>
+
+        <v-divider></v-divider>
+        <v-list-item-group>
+          <v-list-item v-for="t in tabs" :key="t.link" link @click="goTo(t.link)">
+            <v-list-item-content>
+              <v-list-item-title>{{ t.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
     <v-main>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
@@ -90,6 +139,7 @@ export default {
     return {
       loading: true,
       drawer: false,
+      menu: false,
       isLogin: '',
       tabs: [
         {
@@ -129,7 +179,9 @@ export default {
   },
   methods: {
     goTo (link) {
-      this.$router.push(link)
+      if (this.$route.path !== link) {
+        this.$router.push(link)
+      }
     },
     async logout () {
       try {
@@ -137,9 +189,10 @@ export default {
         await this.$store.dispatch('users/logOut')
         await this.$store.commit('cart/updCart', [])
         await this.$store.dispatch('cart/loadCart', this.isLogin)
+        this.isLogin = this.$store.getters['users/getUid'] !== null
         this.user = {}
-        this.$router.push('/')
         this.loading = false
+        this.$router.push('/')
       } catch (error) {
 
       }
@@ -169,6 +222,9 @@ export default {
   justify-content: center;
   align-items: center;
   align-self: center;
+  @media (max-width: 600px) {
+    display: none;
+  }
   .nav-title {
     font-size: 20px;
     font-weight: lighter;

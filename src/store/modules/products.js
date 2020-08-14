@@ -108,7 +108,8 @@ export default {
     },
     productsByCategory: state => categoryName => {
       return state.products.filter(product => {
-        return product.categoryName.toLowerCase() === categoryName.toLowerCase()
+        console.log(categoryName)
+        return product.category.toLowerCase() === categoryName.toLowerCase()
       })
     }
   },
@@ -156,7 +157,7 @@ export default {
         }
         commit('read', uProducts)
       } catch (error) {
-
+        console.log(error)
       }
     },
     delete () { }

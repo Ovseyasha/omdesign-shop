@@ -2,6 +2,8 @@
   <v-btn
     class="font-weight-light"
     :color=" !inCart ? 'secondary' : 'primary'"
+    x-large
+    block
     tile
     @click="cartMove"
   >{{ !inCart? 'В корзину' : 'В корзине'}}</v-btn>

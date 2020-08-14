@@ -1,50 +1,51 @@
 <template>
   <Loader v-if="loading" />
-  <v-card v-else class="d-inline-block mx-auto product" tile>
-    <div v-if="product.isNew" class="isNew">Новинка!</div>
+  <v-col cols="12" v-else>
+    <div v-if="product.isNew" class="isNew px-5">Новинка!</div>
     <v-row justify="center">
-      <v-col lg="4">
-        <v-carousel class="product__slider" height="auto">
-          <v-carousel-item width="auto" v-for="(item,i) in product.photos" :key="i" :src="item.img"></v-carousel-item>
+      <v-col xl="4" lg="4" md="5" sm="12" cols="12">
+        <v-carousel height="auto">
+          <v-carousel-item v-for="(item,i) in product.photos" :key="i" :src="item.img"></v-carousel-item>
         </v-carousel>
       </v-col>
 
-      <v-col cols="6" class="pl-10">
-        <v-row class="flex-column ma-0 fill-height" justify="center">
-          <v-col class="px-0">
-            <h1 class="text-h2">{{ product.name }}</h1>
-            <v-row>
-              <v-col cols="6" class="text-center pl-0">
-                <span class="product__title text-subtitle-1">Категория:</span>
-                <span class="product__value text-subtitle-1">{{product.categoryName | ucFirst}}</span>
-              </v-col>
-              <v-col cols="6" class="text-center pl-0">
-                <span class="product__title text-subtitle-1">Наличие:</span>
-                <span class="product__value text-subtitle-1">{{product.status | ucFirst}}</span>
-              </v-col>
-            </v-row>
+      <v-col xl="6" lg="6" md="6" sm="12" cols="12" class="font-weight-light">
+        <v-row>
+          <v-col cols="12">
+            <h1 class="text-h2 font-weight-light">{{ product.name }}</h1>
           </v-col>
-
-          <v-col class="px-0">
-            <v-row class="product__row product__row_price">
-              <v-col cols="6" class="text-right">
-                <span class="product__title text-subtitle-1">Цена:</span>
-                <span class="product__value">
-                  <span class="product__price">{{product.price | price}}</span>
-                  <span
-                    v-if="product.oldPrice"
-                    class="product__oldPrice"
-                  >{{product.oldPrice | price}}</span>
-                </span>
-              </v-col>
-              <v-col cols="6" class="text-right">
-                <v-btn icon>
-                  <v-icon>mdi-heart</v-icon>
-                </v-btn>
-              </v-col>
-            </v-row>
+        </v-row>
+        <v-row justify="space-between" class="mb-5">
+          <v-col xl="6" lg="6" cols="12" align-self="center">
+            <span class="text-h5 font-weight-light">Категория:</span>
+            <span
+              class="text-h5 font-weight-light secondary--text ml-2"
+            >{{product.category | ucFirst}}</span>
           </v-col>
-          <v-col class="px-0" v-if="product.sizes">
+          <v-col xl="6" lg="6" cols="12" align-self="center">
+            <span class="text-h5 font-weight-light">Наличие:</span>
+            <span
+              class="text-h5 font-weight-light secondary--text ml-2"
+            >{{product.status | ucFirst}}</span>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col xl="3" lg="3" cols="12" align-self="center">
+            <span class="text-h5 font-weight-light">Цена:</span>
+            <span class="ml-2 text-h5 font-weight-light secondary--text">
+              <span class>{{product.price | price}}</span>
+              <span v-if="product.oldPrice" class="product__oldPrice">{{product.oldPrice | price}}</span>
+            </span>
+          </v-col>
+          <v-col xl="6" lg="6" cols="10" offset-xl="2" offset-lg="2">
+            <BtnForCart :id="product.id" :selectedSize="selectedSize" />
+          </v-col>
+          <v-col xl="1" lg="1" cols="2" align-self="center">
+            <WishListAdder :id="product.id" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" v-if="product.sizes">
             <v-select
               v-if="changeSized"
               label="Измените размер"
@@ -54,32 +55,51 @@
             ></v-select>
             <v-select v-else :items="product.sizes" v-model="selectedSize" label="Выберите размер"></v-select>
           </v-col>
-          <v-col class="px-0">
+        </v-row>
+        <v-row>
+          <v-col cols="12">
             <p
-              class="text-subtitle-1 product__desc"
+              class="text-subtitle-1 font-weight-light"
               v-for="(sub,index) in product.desc"
               :key="index"
             >{{sub}}</p>
           </v-col>
-          <v-col class="px-0">
-            <BtnForCart :id="product.id" :selectedSize="selectedSize" />
-          </v-col>
         </v-row>
       </v-col>
     </v-row>
-
     <v-row justify="center" class="mt-10">
-      <v-col cols="6">
-        <v-badge
-          color="green"
-          :content="product.feedback.length"
-          :value="
-          product.feedback.length"
-          v-if="product.feedback"
-        >
-          <h1 class="product__feedback-header font-weight-light text-h4">Отзывы покупателей</h1>
-        </v-badge>
-        <h2 v-else class="text-h4 mt-15 font-weight-light">Отзывов ещё нет — ваш может стать первым!</h2>
+      <v-col xl="10" lg="10" md="11" cols="12">
+        <v-row>
+          <v-col xl="6" lg="6" cols="12">
+            <v-badge
+              color="green"
+              :content="product.feedback.length"
+              :value="product.feedback.length"
+              v-if="product.feedback"
+            >
+              <h1 class="product__feedback-header font-weight-light text-h4">Отзывы покупателей</h1>
+            </v-badge>
+            <h2
+              v-else
+              class="text-h4 mt-15 font-weight-light"
+            >Отзывов ещё нет — ваш может стать первым!</h2>
+          </v-col>
+          <v-col xl="6" lg="6" cols="12">
+            <v-row class="mb-5" justify="space-around" align="center">
+              <v-col cols="6" align="right">
+                <v-rating v-model="summarScore" readonly></v-rating>
+              </v-col>
+              <v-col cols="6" align="center">
+                <h1 class="text-h5">{{Math.round(summarScore)}} / 5</h1>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12">
+                <v-btn x-large block outlined color="secondary" tile>Написать отзыв</v-btn>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
         <v-row
           class="product__comment"
           v-for="(com,index) in product.feedback"
@@ -129,21 +149,13 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="4" class="ml-5 mt-16">
-        <v-row class="mb-5" justify="space-around" align="center">
-          <v-rating v-model="summarScore" readonly></v-rating>
-          <h1 class="text-h5">{{Math.round(summarScore)}} / 5</h1>
-        </v-row>
-        <v-row>
-          <v-btn x-large block outlined color="secondary" tile>Написать отзыв</v-btn>
-        </v-row>
-      </v-col>
     </v-row>
-  </v-card>
+  </v-col>
 </template>
 
 <script>
 import BtnForCart from '@/components/app/BtnForCart'
+import WishListAdder from '@/components/app/WishListAdder'
 export default {
   async mounted () {
     window.scrollTo({
@@ -156,13 +168,11 @@ export default {
     this.product = await this.$store.getters['products/productById'](this.$route.params.id)
     await this.$store.dispatch('cart/loadCart', this.isLogin)
     const productInCart = this.$store.getters['cart/products']
-    console.log(productInCart)
     productInCart.find(p => {
       if (p.id === this.$route.params.id) {
         this.changeSized = p.selectedSize
       }
     })
-    console.log(this.changeSized)
     this.loading = false
   },
   data () {
@@ -201,15 +211,17 @@ export default {
     }
   },
   components: {
-    BtnForCart
+    BtnForCart,
+    WishListAdder
   }
 }
 </script>
 
 <style lang="less">
 .isNew {
+  z-index: 1;
   top: 0;
-  width: 15%;
+  // width: 15%;
   right: 0;
   position: absolute;
   height: 50px;
@@ -228,12 +240,8 @@ export default {
     line-height: 1.4rem !important;
   }
   &__slider {
-    width: 95%;
+    width: 100%;
   }
-  // &__row {
-  //   // &_price {
-  //   // }
-  // }
   &__title {
     margin-right: 10px;
     font-weight: bold !important;
