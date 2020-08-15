@@ -18,7 +18,8 @@
 import ProductCard from '@/components/app/ProductCard'
 export default {
   async mounted () {
-    this.products = await this.$store.getters['products/salesProducts']
+    await this.$store.dispatch('products/read')
+    this.products = this.$store.getters['products/salesProducts']
     this.loading = false
   },
   data: () => ({

@@ -73,8 +73,8 @@
           <v-col xl="6" lg="6" cols="12">
             <v-badge
               color="green"
-              :content="product.feedback.length"
-              :value="product.feedback.length"
+              :content="countReview"
+              :value="countReview"
               v-if="product.feedback"
             >
               <h1 class="product__feedback-header font-weight-light text-h4">Отзывы покупателей</h1>
@@ -95,7 +95,14 @@
             </v-row>
             <v-row>
               <v-col cols="12">
-                <v-btn x-large block outlined color="secondary" tile>Написать отзыв</v-btn>
+                <v-btn
+                  x-large
+                  block
+                  outlined
+                  color="secondary"
+                  @click="openDialog()"
+                  tile
+                >Написать отзыв</v-btn>
               </v-col>
             </v-row>
           </v-col>
@@ -106,15 +113,15 @@
           :key="index"
           justify="space-between"
         >
-          <v-col cols="1">
-            <v-avatar>
-              <img :src="com.userPhoto" alt="John" />
-            </v-avatar>
-          </v-col>
-          <v-col>
+          <v-col cols="12">
             <v-row justify="space-between">
-              <v-col>
-                <p>{{com.userName}}</p>
+              <v-col cols="1" align="center">
+                <v-avatar>
+                  <img :src="com.userAvatar" :alt="com.userName" />
+                </v-avatar>
+              </v-col>
+              <v-col align-self="center" offset-xl="0" offset-lg="0" offset="1">
+                <p>{{com.userName}} {{com.userSurName}}</p>
               </v-col>
               <v-col>
                 <v-row justify="end">
@@ -123,7 +130,38 @@
               </v-col>
             </v-row>
             <v-row>
-              <p>{{com.comment}}</p>
+              <v-col cols="12">
+                <p>{{com.comment}}</p>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                xl="1"
+                lg="1"
+                cols="4"
+                align-self="end"
+                v-for="(pic,index) in com.photos"
+                :key="index"
+              >
+                <v-img
+                  :src="pic.img"
+                  max-height="200px"
+                  style="cursor: pointer"
+                  @click="openPhotoView(pic.img)"
+                ></v-img>
+              </v-col>
+              <v-dialog tile v-model="photoView" max-width="500">
+                <v-card tile>
+                  <v-col cols="12">
+                    <v-row justify="end">
+                      <v-btn icon @click="photoView = false" class="mr-2">
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </v-row>
+                  </v-col>
+                  <v-img :src="url"></v-img>
+                </v-card>
+              </v-dialog>
             </v-row>
             <v-row justify="space-between">
               <v-col cols="3">
@@ -138,7 +176,7 @@
                     <v-btn icon>
                       <v-icon>mdi-thumb-down-outline</v-icon>
                     </v-btn>
-                    <small>{{com.dislikes}}</small>
+                    <small>{{com.disLikes}}</small>
                   </v-col>
                 </v-row>
               </v-col>
@@ -150,12 +188,72 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-dialog v-model="reviewWindow" fullscreen hide-overlay transition="dialog-bottom-transition">
+      <v-card tile class="font-weight-light">
+        <v-toolbar fixed dark color="primary">
+          <v-btn icon dark @click="reviewWindow = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Ваш отзыв</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn dark text tile class="font-weight-light" @click="sendReview">Отправить</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-card-actions>
+          <v-col cols="12">
+            <v-row justify="center">
+              <v-col xl="8" lg="8" cols="12">
+                <v-row>
+                  <v-col cols="12" align="center">
+                    <h2 class="font-weight-light text-center">Оцените покупку</h2>
+                    <v-rating class="mt-5" v-model="review.score"></v-rating>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <v-textarea
+                      label="Описание товара"
+                      hint="Поделитесь впечатлениями о товаре"
+                      counter="540"
+                      v-model="review.comment"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <SlideEditor :slides="review.photos" @changed="slideChange" />
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog tile v-model="entryDialog" max-width="390">
+      <v-card>
+        <v-card-text>
+          <h2
+            class="font-weight-light pt-10"
+          >Только зарегистрированные пользователи могут оставлять отзывы.</h2>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn tile text @click="entryDialog = false">Отмена</v-btn>
+          <router-link to="/login">
+            <v-btn tile color="primary" text>Войти</v-btn>
+          </router-link>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-col>
 </template>
 
 <script>
 import BtnForCart from '@/components/app/BtnForCart'
 import WishListAdder from '@/components/app/WishListAdder'
+import SlideEditor from '@/components/app/SlideEditor'
 export default {
   async mounted () {
     window.scrollTo({
@@ -163,9 +261,8 @@ export default {
       behavior: 'smooth'
     })
     // Диспатч в стаейт с сервера
-    this.isLogin = await this.$store.getters['users/getUid'] !== null
+    this.isLogin = this.$store.getters['users/getUid'] !== null
     await this.$store.dispatch('products/read')
-    this.product = await this.$store.getters['products/productById'](this.$route.params.id)
     await this.$store.dispatch('cart/loadCart', this.isLogin)
     const productInCart = this.$store.getters['cart/products']
     productInCart.find(p => {
@@ -179,25 +276,44 @@ export default {
     return {
       loading: true,
       selectedSize: null,
-      product: {},
       changeSized: null,
-      isLogin: ''
+      isLogin: '',
+      reviewWindow: false,
+      entryDialog: false,
+      photoView: false,
+      url: null,
+      review: {
+        score: 0,
+        comment: '',
+        photos: null
+      }
     }
   },
   computed: {
     summarScore () {
       let answer = 0
       if (this.product.feedback) {
-        const sum = this.product.feedback.reduce((total, item) => {
+        const sum = Object.values(this.product.feedback).reduce((total, item) => {
           return total + item.score
         }, 0)
-        const count = this.product.feedback.length
+        console.log(sum)
+        const count = this.countReview
         answer = sum / count
       }
       return answer
+    },
+    countReview () {
+      return Object.keys(this.product.feedback).length
+    },
+    product () {
+      return this.$store.getters['products/productById'](this.$route.params.id)
     }
   },
   methods: {
+    openPhotoView (src) {
+      this.url = src
+      this.photoView = true
+    },
     async changeSize (id, v) {
       try {
         await this.$store.dispatch('cart/changeSize', {
@@ -208,11 +324,42 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    openDialog () {
+      if (this.isLogin) {
+        this.reviewWindow = true
+      } else {
+        this.entryDialog = true
+      }
+    },
+    slideChange (v, d) {
+      this.review.photos = v
+    },
+    async sendReview () {
+      try {
+        this.loading = true
+        if (this.review.photos) {
+          this.review.photos.forEach(el => {
+            delete el.url
+          })
+        }
+        await this.$store.dispatch('products/createReview', {
+          id: this.product.id,
+          review: this.review
+        })
+        await this.$store.dispatch('products/read')
+        this.review = {}
+        this.loading = false
+        this.reviewWindow = false
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   components: {
     BtnForCart,
-    WishListAdder
+    WishListAdder,
+    SlideEditor
   }
 }
 </script>

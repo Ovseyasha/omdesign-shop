@@ -1,116 +1,132 @@
 <template>
   <Loader v-if="loading" />
-  <v-card v-else tile height="auto" class="cart">
-    <v-card-text>
-      <v-card-subtitle class="cart__text" v-if="products.length === 0">
-        Корзина пуста
+  <v-col xl="10" lg="10" cols="12" v-else>
+    <v-row>
+      <v-col cols="12" align="center" class="pb-0" v-if="products.length !== 0">
+        <h1 class="font-weight-light">Корзина</h1>
+      </v-col>
+    </v-row>
+    <v-row v-if="products.length === 0">
+      <v-col cols="12">
+        <h2 class="text-center mb-2 font-weight-light">Корзина пуста</h2>
         <router-link to="/">
-          <v-btn color="primary" tile>Перейти к покупкам</v-btn>
+          <v-btn x-large block color="primary" class="font-weight-light" tile>Перейти к покупкам</v-btn>
         </router-link>
-      </v-card-subtitle>
-      <v-row v-else>
-        <v-col>
-          <v-row
-            justify="space-between"
-            align="center"
-            v-for="product in products"
-            :key="product.id"
-            class="font-weight-light"
-          >
-            <v-col xl="2" lg="2" md="12" sm="12" cols="12" align="center">
-              <router-link :to="`/product/${product.id}`">
-                <v-img :src="product.photos[0].img" max-width="500px" class="mb-5 mt-5"></v-img>
-              </router-link>
-            </v-col>
-            <v-col xl="2" lg="2" md="12" sm="12" cols="12">
-              <router-link :to="`/product/${product.id}`" class="cart__color">
-                <h1 class="font-weight-light">{{product.name}}</h1>
-              </router-link>
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col cols="12">
+        <v-row v-for="product in products" :key="product.id" class="font-weight-light">
+          <v-col cols="12">
+            <v-row justify="space-between" align="center">
+              <v-col xl="2" lg="2" md="12" sm="12" cols="12" align="center">
+                <router-link :to="`/products/${product.id}`">
+                  <v-img :src="product.photos[0].img" max-width="500px" class="mb-5"></v-img>
+                </router-link>
+              </v-col>
+              <v-col xl="2" lg="2" md="12" sm="12" cols="12">
+                <router-link :to="`/products/${product.id}`" class="cart__color">
+                  <h2 class="font-weight-light">{{product.name}}</h2>
+                </router-link>
 
-              <p>{{product.category | ucFirst}}</p>
-            </v-col>
-            <v-col xl="1" lg="1" md="12" sm="12" cols="12" align="center">
-              <v-select
-                v-if="product.selectedSize"
-                ref="select1"
-                :items="product.sizes"
-                :value="product.selectedSize"
-                @change="changeSize(product.id, $event)"
-                label="Размер"
-              ></v-select>
-              <v-select
-                v-else
-                ref="select2"
-                :items="product.sizes"
-                @change="changeSize(product.id, $event)"
-                label="Размер"
-              ></v-select>
-            </v-col>
-            <v-col
-              xl="2"
-              lg="2"
-              md="12"
-              sm="12"
-              cols="12"
-              class="text-h5 font-weight-light"
-              align="center"
-            >{{ product.price | price}}</v-col>
-            <v-col xl="2" lg="2" md="12" sm="12" cols="12" align="center">
-              <v-btn x-large color="secondary" @click="addCount(product.id, product.count)" icon>
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-              <span class="mx-5 text-subtitle-1 font-weight-light">{{product.count }}</span>
-              <v-btn
-                x-large
-                color="secondary"
-                @click="minusCount(product.id, product.count)"
-                icon
-                :disabled="product.count === 1"
-              >
-                <v-icon>mdi-minus</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col
-              xl="2"
-              lg="2"
-              md="12"
-              sm="12"
-              cols="12"
-              class="text-h5 font-weight-light secondary--text"
-              align="center"
-            >{{ product.price * product.count | price }}</v-col>
-            <v-col xl="1" lg="1" md="12" sm="12" cols="12" class="mx-auto" align="center">
-              <v-btn icon @click="deleteProduct(product.id)" x-large>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-      <v-row justify="end" class="mr-5 mt-5" v-if="products.length !== 0">
-        <p class="text-right text-h4 font-weight-bold">ИТОГ:</p>
-        <h1 class="text-h4 font-weight-light secondary--text ml-5">{{total | price}}</h1>
-      </v-row>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn
-        @click="checkout"
-        block
-        x-large
-        class="font-weight-light"
-        v-if="products.length !== 0"
-      >Продолжить оформление заказа</v-btn>
-    </v-card-actions>
-  </v-card>
+                <p>{{product.category | ucFirst}}</p>
+              </v-col>
+              <v-col xl="1" lg="1" md="12" sm="12" cols="12" align="center">
+                <v-select
+                  v-if="product.selectedSize"
+                  ref="select1"
+                  :items="product.sizes"
+                  :value="product.selectedSize"
+                  @change="changeSize(product.id, $event)"
+                  label="Размер"
+                ></v-select>
+                <v-select
+                  v-else
+                  ref="select2"
+                  :items="product.sizes"
+                  @change="changeSize(product.id, $event)"
+                  label="Размер"
+                ></v-select>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="12"
+                sm="12"
+                cols="12"
+                class="text-h5 font-weight-light"
+                align="center"
+              >{{ product.price | price}}</v-col>
+              <v-col xl="2" lg="2" md="12" sm="12" cols="12" align="center">
+                <v-btn x-large color="secondary" @click="addCount(product.id, product.count)" icon>
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <span class="mx-5 text-subtitle-1 font-weight-light">{{product.count }}</span>
+                <v-btn
+                  x-large
+                  color="secondary"
+                  @click="minusCount(product.id, product.count)"
+                  icon
+                  :disabled="product.count === 1"
+                >
+                  <v-icon>mdi-minus</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col
+                xl="2"
+                lg="2"
+                md="12"
+                sm="12"
+                cols="12"
+                class="text-h5 font-weight-light secondary--text"
+                align="center"
+              >{{ product.price * product.count | price }}</v-col>
+              <v-col xl="1" lg="1" md="12" sm="12" cols="12" class="mx-auto" align="center">
+                <v-btn icon @click="deleteProduct(product.id)" x-large>
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-divider></v-divider>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row justify="end" class="mr-5" v-if="products.length !== 0">
+      <v-col cols="auto">
+        <p class="text-h4 font-weight-bold">ИТОГ:</p>
+      </v-col>
+      <v-col cols="auto">
+        <h1 class="text-h4 font-weight-light secondary--text">{{total | price}}</h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-btn
+          @click="checkout"
+          block
+          tile
+          x-large
+          class="font-weight-light"
+          v-if="products.length !== 0"
+        >Продолжить оформление</v-btn>
+      </v-col>
+    </v-row>
+  </v-col>
 </template>
 
 <script>
 export default {
-  mounted () {
+  async mounted () {
+    await this.$store.dispatch('products/read')
+    await this.$store.dispatch('cart/loadCart', this.isLogin)
+    this.loading = false
   },
   data () {
     return {
-      loading: false
+      loading: true
     }
   },
   computed: {

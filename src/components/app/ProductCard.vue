@@ -4,13 +4,13 @@
       <img v-if="product.isNew" class="card__isNew" :src="require('@/assets/new.png')" alt="is new" />
       <v-list-item>
         <v-list-item-content>
-          <router-link class="card__name" :to="`/product/${product.id}`">
+          <router-link class="card__name" :to="`/products/${product.id}`">
             <v-list-item-title class="font-weight-light headline">{{product.name}}</v-list-item-title>
           </router-link>
           <v-list-item-subtitle>{{product.category | ucFirst}}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
-      <router-link :to="`/product/${product.id}`">
+      <router-link :to="`/products/${product.id}`">
         <v-img :src="product.photos[0].img" height="400"></v-img>
       </router-link>
 
@@ -24,16 +24,10 @@
           <v-col cols="10">
             <BtnForCart :id="product.id" />
           </v-col>
-          <!-- <v-col cols="5">
-            <router-link class="card__more" :to="`/product/${product.id}`">
-              <v-btn block x-large text color="primary" tile class="font-weight-light">Подробнее</v-btn>
-            </router-link>
-          </v-col>-->
           <v-col cols="2" align-self="center">
             <WishListAdder :id="product.id" />
           </v-col>
         </v-row>
-        <!-- <v-spacer></v-spacer> -->
       </v-card-actions>
     </v-card>
   </v-col>

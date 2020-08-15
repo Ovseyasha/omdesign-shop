@@ -21,11 +21,9 @@ import ProductCard from '@/components/app/ProductCard'
 
 export default {
   async mounted () {
-    // await this.$store.dis
+    await this.$store.dispatch('products/read')
     await this.$store.dispatch('category/read')
     this.categories = this.$store.getters['category/categories']
-    console.log(this.categories)
-    // сделать диспатч всех продукстов с сервера
     this.loading = false
   },
   data () {

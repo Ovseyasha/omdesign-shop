@@ -1,8 +1,8 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer class="category" v-model="drawer" color="primary" fixed>
-      <v-list dense class="py-0">
-        <v-list-item two-line class="px-0" style="margin-top: 150px ;">
+    <v-navigation-drawer class="category" v-model="drawer" color="primary" fixed temporary>
+      <v-list class="font-weight-light">
+        <v-list-item two-line class="mt-15 pt-10">
           <h1 class="category-title">Категории</h1>
         </v-list-item>
 
@@ -12,7 +12,8 @@
             v-for="item in categories"
             :key="item.id"
             link
-            @click="goTo(`/category/${item.id}`)"
+            router
+            :to="`/category/${item.id}`"
           >
             <v-list-item-content>
               <v-list-item-title>{{item.name}}</v-list-item-title>
@@ -45,15 +46,7 @@
           </v-col>
           <v-col xl="2" lg="3" md="3" cols="7" align-self="center">
             <v-row justify="center" align="center">
-              <v-col cols="4" align="center" v-if="!isLogin">
-                <router-link to="/login">
-                  <v-btn icon title="Войти">
-                    <v-icon color="accent">mdi-login</v-icon>
-                  </v-btn>
-                </router-link>
-                <router-link to="/account"></router-link>
-              </v-col>
-              <v-col cols="4" align="center">
+              <v-col cols="6" align="center">
                 <router-link to="/cart">
                   <v-btn icon title="Корзина">
                     <v-badge color="secondary" :content="countInCart" :value="countInCart">
@@ -62,13 +55,10 @@
                   </v-btn>
                 </router-link>
               </v-col>
-              <v-col cols="4" align="center" v-if="isLogin">
-                <v-btn icon title="Выход" @click="logout">
-                  <v-icon color="accent">mdi-logout</v-icon>
+              <v-col cols="6" align="left">
+                <v-btn @click="menu = !menu" icon title="Навигация">
+                  <v-icon>mdi-navigation</v-icon>
                 </v-btn>
-              </v-col>
-              <v-col cols="4" align="center">
-                <v-app-bar-nav-icon @click="menu = !menu"></v-app-bar-nav-icon>
               </v-col>
             </v-row>
           </v-col>
@@ -76,19 +66,28 @@
       </v-container>
     </v-app-bar>
     <v-navigation-drawer temporary v-model="menu" color="primary" right fixed dark>
-      <v-list dense>
-        <router-link to="/account" title="Личный кабинет" v-if="isLogin">
-          <v-list-item tile two-line class="ml-5 px-0">
-            <v-list-item-avatar>
-              <img :src="userAvatar" />
-            </v-list-item-avatar>
+      <v-list class="font-weight-light">
+        <v-col cols="12" v-if="isLogin">
+          <v-row justify="center">
+            <v-col cols="3" align-self="center">
+              <router-link to="/account" title="Личный кабинет">
+                <v-avatar>
+                  <img :src="userAvatar" alt="avatar" />
+                </v-avatar>
+              </router-link>
+            </v-col>
+            <v-col cols="5" align-self="center">
+              <h3 class="font-weight-light text-subtitle-1">Здравствуйте</h3>
+              <h4 class="font-weight-light text-subtitle-2">{{user.name}}</h4>
+            </v-col>
+            <v-col cols="3" offset="1" align-self="center">
+              <v-btn icon title="Выход" @click="logout">
+                <v-icon color="accent">mdi-logout</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-col>
 
-            <v-list-item-content>
-              <v-list-item-title>Здравствуйте</v-list-item-title>
-              <v-list-item-subtitle>{{user.name}}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </router-link>
         <router-link v-else to="/login">
           <v-list-item tile two-line>
             <v-list-item-icon>
@@ -104,7 +103,7 @@
 
         <v-divider></v-divider>
         <v-list-item-group>
-          <v-list-item v-for="t in tabs" :key="t.link" link @click="goTo(t.link)">
+          <v-list-item v-for="t in tabs" :key="t.link" link router :to="t.link">
             <v-list-item-content>
               <v-list-item-title>{{ t.title }}</v-list-item-title>
             </v-list-item-content>
@@ -123,11 +122,9 @@
 </template>
 
 <script>
-// import Header from '@/components/app/Header'
 export default {
   async mounted () {
     // ПОТОМ взывать диспатч с сервера
-    await this.$store.dispatch('products/read')
     await this.$store.dispatch('users/getInfo')
     this.user = this.$store.getters['users/info']
     this.isLogin = this.$store.getters['users/getUid'] !== null
@@ -194,12 +191,9 @@ export default {
         this.loading = false
         this.$router.push('/')
       } catch (error) {
-
+        console.log(error)
       }
     }
-  },
-  components: {
-    // Header
   }
 }
 </script>

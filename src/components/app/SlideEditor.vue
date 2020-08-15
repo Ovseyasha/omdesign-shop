@@ -1,9 +1,11 @@
 <template>
-  <v-container>
+  <v-col cols="12">
     <v-row>
-      <v-col>
+      <v-col cols="12">
         <v-row>
-          <v-text-field v-model="title" label="Название фотографии" required></v-text-field>
+          <v-col cols="12">
+            <v-text-field v-model="title" label="Название фотографии" required></v-text-field>
+          </v-col>
         </v-row>
         <v-row justify="center">
           <input
@@ -13,38 +15,52 @@
             ref="fileInput"
             @change="onfilePicked"
           />
-          <v-btn @click="onPickFile" tile class="mx-5 font-weight-light" color="primary">
-            <v-icon left>mdi-paperclip</v-icon>Выбрать фото
-          </v-btn>
-          <p>{{filename}}</p>
-          <v-btn tile class="mx-5 font-weight-light" @click="add">
-            <v-icon left>mdi-plus</v-icon>Добавить
-          </v-btn>
-          <v-btn tile class="mx-5 font-weight-light" @click="save" color="primary">
-            <v-icon left>mdi-upload</v-icon>Сохранить изменения
-          </v-btn>
+          <v-col cols="auto">
+            <v-btn block @click="onPickFile" tile class="font-weight-light" color="primary">
+              <v-icon left>mdi-paperclip</v-icon>Выбрать фото
+            </v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <p>{{filename}}</p>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn block tile class="font-weight-light" @click="add">
+              <v-icon left>mdi-plus</v-icon>Добавить
+            </v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn block tile class="font-weight-light" @click="save" color="primary">
+              <v-icon left>mdi-upload</v-icon>Сохранить изменения
+            </v-btn>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
     <v-row>
-      <div class="slide" v-for="(slide,index) in newSlides" :key="index">
+      <v-col v-for="(slide,index) in newSlides" :key="index" align-self="end">
         <template v-if="slide.img !== ''">
-          <img :src="slide.url || slide.img" width="150px" />
-          <div class="text-center font-weight-light mt-5">{{slide.title}}</div>
-          <v-btn x-large @click="remove(index)" icon>
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
+          <v-row justify="center">
+            <img :src="slide.url || slide.img" height="200px" />
+          </v-row>
+          <v-row justify="center">
+            <div class="text-center font-weight-light mt-5">{{slide.title}}</div>
+          </v-row>
+          <v-row justify="center">
+            <v-btn x-large @click="remove(index)" icon>
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-row>
         </template>
-      </div>
+      </v-col>
     </v-row>
-  </v-container>
+  </v-col>
 </template>
 
 <script>
 export default {
   props: ['slides'],
   mounted () {
-    if (this.slides.length) {
+    if (this.slides) {
       this.newSlides = this.slides
     }
   },
