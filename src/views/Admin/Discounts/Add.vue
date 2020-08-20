@@ -1,5 +1,5 @@
 <template>
-  <div>add d</div>
+  <v-col cols="12">ddd</v-col>
 </template>
 
 <script>

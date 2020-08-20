@@ -167,16 +167,24 @@
               <v-col cols="3">
                 <v-row justify="space-between">
                   <v-col cols="5">
-                    <v-btn icon>
+                    <v-btn
+                      :color="com.likes ? Object.values(com.likes).find(e => e === userId) ? 'primary' : '': ''"
+                      icon
+                      @click="likeReview(product.id, index,'like')"
+                    >
                       <v-icon>mdi-thumb-up</v-icon>
                     </v-btn>
-                    <small>{{com.likes}}</small>
+                    <small>{{ com.likes ? Object.keys(com.likes).length : 0}}</small>
                   </v-col>
                   <v-col cols="5">
-                    <v-btn icon>
+                    <v-btn
+                      :color="com.disLikes ? Object.values(com.disLikes).find(e => e === userId) ? 'primary' : '': ''"
+                      icon
+                      @click="likeReview(product.id, index, 'disLike')"
+                    >
                       <v-icon>mdi-thumb-down-outline</v-icon>
                     </v-btn>
-                    <small>{{com.disLikes}}</small>
+                    <small>{{ com.disLikes ? Object.keys(com.disLikes).length : 0}}</small>
                   </v-col>
                 </v-row>
               </v-col>
@@ -262,6 +270,7 @@ export default {
     })
     // Диспатч в стаейт с сервера
     this.isLogin = this.$store.getters['users/getUid'] !== null
+    this.userId = this.$store.getters['users/getUid']
     await this.$store.dispatch('products/read')
     await this.$store.dispatch('cart/loadCart', this.isLogin)
     const productInCart = this.$store.getters['cart/products']
@@ -277,6 +286,7 @@ export default {
       loading: true,
       selectedSize: null,
       changeSized: null,
+      userId: '',
       isLogin: '',
       reviewWindow: false,
       entryDialog: false,
@@ -296,7 +306,6 @@ export default {
         const sum = Object.values(this.product.feedback).reduce((total, item) => {
           return total + item.score
         }, 0)
-        console.log(sum)
         const count = this.countReview
         answer = sum / count
       }
@@ -351,6 +360,18 @@ export default {
         this.review = {}
         this.loading = false
         this.reviewWindow = false
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async likeReview (prodId, index, action) {
+      try {
+        await this.$store.dispatch('products/likeReview', {
+          prodId,
+          index,
+          action
+        })
+        await this.$store.dispatch('products/read')
       } catch (error) {
         console.log(error)
       }

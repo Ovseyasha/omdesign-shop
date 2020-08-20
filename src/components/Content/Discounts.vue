@@ -8,7 +8,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-carousel show-arrows-on-hover hide-delimiters>
+        <v-carousel height="auto" show-arrows-on-hover hide-delimiters>
           <v-carousel-item v-for="(slide, i) in slides" :key="i" :src="slide.url"></v-carousel-item>
         </v-carousel>
       </v-row>

@@ -32,21 +32,23 @@
                 <p>{{product.category | ucFirst}}</p>
               </v-col>
               <v-col xl="1" lg="1" md="12" sm="12" cols="12" align="center">
-                <v-select
-                  v-if="product.selectedSize"
-                  ref="select1"
-                  :items="product.sizes"
-                  :value="product.selectedSize"
-                  @change="changeSize(product.id, $event)"
-                  label="Размер"
-                ></v-select>
-                <v-select
-                  v-else
-                  ref="select2"
-                  :items="product.sizes"
-                  @change="changeSize(product.id, $event)"
-                  label="Размер"
-                ></v-select>
+                <template v-if="product.sizes">
+                  <v-select
+                    v-if="product.selectedSize"
+                    ref="select1"
+                    :items="product.sizes"
+                    :value="product.selectedSize"
+                    @change="changeSize(product.id, $event)"
+                    label="Размер"
+                  ></v-select>
+                  <v-select
+                    v-else
+                    ref="select2"
+                    :items="product.sizes"
+                    @change="changeSize(product.id, $event)"
+                    label="Размер"
+                  ></v-select>
+                </template>
               </v-col>
               <v-col
                 xl="2"

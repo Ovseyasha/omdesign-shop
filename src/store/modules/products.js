@@ -20,7 +20,6 @@ export default {
     },
     productsByCategory: state => categoryName => {
       return state.products.filter(product => {
-        console.log(categoryName)
         return product.category.toLowerCase() === categoryName.toLowerCase()
       })
     }
@@ -84,8 +83,8 @@ export default {
           userName: user.name,
           userSurName: user.surName,
           userAvatar: user.avatar.url,
-          likes: 0,
-          disLikes: 0,
+          likes: {},
+          disLikes: {},
           date: new Date().toLocaleDateString()
         }
         const review = await firebase.database().ref(`products/${payload.id}/feedback`).push(sendReview)
@@ -109,7 +108,43 @@ export default {
     },
     async likeReview ({ commit, dispatch }, payload) {
       try {
+        const userId = await store.dispatch('users/getUid')
+        const likes = (await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/likes`).once('value')).val() || {}
+        const disLikes = (await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/disLikes`).once('value')).val() || {}
 
+        if (payload.action === 'like') {
+          for (const key in disLikes) {
+            if (disLikes[key] === userId) {
+              delete disLikes[key]
+            }
+          }
+          if (Object.keys(likes).length) {
+            Object.values(likes).forEach(async e => {
+              if (e !== userId) {
+                await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/likes`).push(userId)
+              }
+            })
+          } else {
+            await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/likes`).push(userId)
+          }
+          await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/disLikes`).set(disLikes)
+        } else {
+          for (const key in likes) {
+            if (likes[key] === userId) {
+              delete likes[key]
+            }
+          }
+          if (Object.keys(disLikes).length) {
+            Object.values(disLikes).forEach(async e => {
+              if (e !== userId) {
+                await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/disLikes`).push(userId)
+              }
+            })
+          } else {
+            await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/disLikes`).push(userId)
+          }
+          await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/likes`).set(likes)
+        }
       } catch (error) {
         console.log(error)
       }

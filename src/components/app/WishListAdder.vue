@@ -28,7 +28,6 @@ export default {
     const wishList = this.$store.getters['users/info'].wishList
     if (typeof (wishList) !== 'undefined') {
       wishList.find((id) => {
-        console.log(id, this.id)
         if (id === this.id) {
           this.color = 'error'
         }

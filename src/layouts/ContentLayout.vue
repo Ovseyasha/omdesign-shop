@@ -21,8 +21,6 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <v-divider></v-divider>
-      <h1>Сортировка</h1>
     </v-navigation-drawer>
 
     <v-app-bar app clipped height="100px" fixed>

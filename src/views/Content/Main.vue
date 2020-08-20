@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12">
+  <v-col xl="10" lg="10" cols="12">
     <Discounts></Discounts>
     <SalesProducts></SalesProducts>
     <LastProducts></LastProducts>

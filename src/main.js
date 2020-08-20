@@ -9,6 +9,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 // global components
 import Loader from '@/components/app/Loader'
+import Paginate from 'vuejs-paginate'
 // global filters
 import ucFirst from '@/filters/ucFirst.filter'
 import price from '@/filters/price.filter'
@@ -19,7 +20,9 @@ import 'firebase/database'
 import 'firebase/storage'
 import 'firebase/analytics'
 
+// init global components
 Vue.component('Loader', Loader)
+Vue.component('Paginate', Paginate)
 // init plugins
 Vue.use(VueMeta)
 Vue.use(Vuelidate)

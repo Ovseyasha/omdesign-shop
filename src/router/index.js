@@ -163,7 +163,7 @@ const routes = [
     component: () => import('@/views/Admin/Discounts/List.vue')
   },
   {
-    path: '/admin/discounts',
+    path: '/admin/discounts/add',
     name: 'AdminDiscountsAdd',
     meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Discounts/Add.vue')

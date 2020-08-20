@@ -117,7 +117,20 @@ export default {
           delete photo.url
         }
         await this.$store.dispatch('products/create', this.product)
-        this.product = {}
+        this.product = {
+          name: '',
+          category: '',
+          status: '',
+          price: '',
+          oldPrice: false,
+          isNew: true,
+          sizes: [],
+          photos: [],
+          desc: [
+            ''
+          ],
+          feedback: []
+        }
         this.loading = false
       } catch (error) {
         console.log(error)
