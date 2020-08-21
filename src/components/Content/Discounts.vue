@@ -1,6 +1,6 @@
 <template>
   <Loader v-if="loading" />
-  <v-row cols="12" v-else>
+  <v-row cols="12" v-else-if="!loading && slides.length !== 0">
     <v-col cols="12">
       <v-row>
         <v-col cols="12">
@@ -20,13 +20,17 @@
 export default {
   async mounted () {
     // dispatch from server
-    this.slides = await this.$store.getters['discounts/getList']
+    await this.$store.dispatch('discounts/read')
     this.loading = false
   },
   data () {
     return {
-      loading: true,
-      slides: []
+      loading: true
+    }
+  },
+  computed: {
+    slides () {
+      return this.$store.getters['discounts/getList']
     }
   }
 }

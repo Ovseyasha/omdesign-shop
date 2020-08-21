@@ -5,7 +5,10 @@
     <v-row justify="center">
       <v-col xl="4" lg="4" md="5" sm="12" cols="12">
         <v-carousel height="auto">
-          <v-carousel-item v-for="(item,i) in product.photos" :key="i" :src="item.img"></v-carousel-item>
+          <v-carousel-item v-for="(item,i) in product.photos" :key="i">
+            <p class="secondary--text font-weight-light">{{item.title}}</p>
+            <v-img :src="item.img"></v-img>
+          </v-carousel-item>
         </v-carousel>
       </v-col>
 

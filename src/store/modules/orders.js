@@ -3,20 +3,23 @@ import firebase from 'firebase/app'
 export default {
   namespaced: true,
   state: {
-    orders: []
+    orders: [],
+    userOrders: []
   },
   getters: {
     list (state) {
       return state.orders
+    },
+    userOrders (state) {
+      return state.userOrders
     }
-    // отредачить
-    // itemById(){
-    //   return 1
-    // }
   },
   mutations: {
     create (state, payload) {
       state.orders.push(payload)
+    },
+    readByUserId (state, payload) {
+      state.userOrders = payload
     }
   },
   actions: {
@@ -27,9 +30,12 @@ export default {
         console.log(error)
       }
     },
-    async readByUserId () {
+    async readByUserId ({ commit }) {
       try {
-
+        const id = await store.dispatch('users/getUid')
+        let orders = (await firebase.database().ref('orders').orderByChild('userId').equalTo(id).once('value')).val()
+        orders = Object.values(orders)
+        commit('readByUserId', orders)
       } catch (error) {
         console.log(error)
       }
@@ -37,9 +43,13 @@ export default {
     async create ({ dispatch, commit }, payload) {
       try {
         const id = await store.dispatch('users/getUid')
-        await firebase.database().ref(`users/${id}/orders`).push(payload)
-        await firebase.database().ref('orders').push(payload)
-        commit('create', payload)
+        const order = {
+          ...payload,
+          userId: id,
+          state: 'Новый заказ'
+        }
+        await firebase.database().ref('orders').push(order)
+        commit('create', order)
       } catch (error) {
         console.log(error)
       }

@@ -3,7 +3,8 @@ import store from '../index'
 export default {
   namespaced: true,
   state: {
-    products: []
+    products: [],
+    myReviews: []
   },
   getters: {
     products (state) {
@@ -22,6 +23,9 @@ export default {
       return state.products.filter(product => {
         return product.category.toLowerCase() === categoryName.toLowerCase()
       })
+    },
+    myReviews (state) {
+      return state.myReviews
     }
   },
   mutations: {
@@ -30,7 +34,10 @@ export default {
       state.products = payload
     },
     update () { },
-    delete () { }
+    delete () { },
+    readReviewById (state, payload) {
+      state.myReviews = payload
+    }
   },
   actions: {
     async create ({ dispatch, commit }, payload) {
@@ -102,6 +109,26 @@ export default {
           })
         }
         await dispatch('read')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async readReviewById ({ commit }) {
+      try {
+        const id = await store.dispatch('users/getUid')
+        const products = (await firebase.database().ref('products').orderByChild('feedback').once('value')).val()
+        const reviews = []
+        const arrProd = Object.values(products)
+        arrProd.forEach(p => {
+          if (p.feedback) {
+            Object.values(p.feedback).forEach(r => {
+              if (r.userId === id) {
+                reviews.push(r)
+              }
+            })
+          }
+        })
+        commit('readReviewById', reviews)
       } catch (error) {
         console.log(error)
       }

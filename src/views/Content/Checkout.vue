@@ -168,7 +168,8 @@ export default {
           timeDeliv: this.time,
           comment: this.comment,
           payMethod: this.payMethod,
-          products: this.info.productInCart
+          products: this.info.productInCart,
+          total: this.total
         }
         console.log(order)
         await this.$store.dispatch('orders/create', order)

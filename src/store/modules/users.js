@@ -24,6 +24,9 @@ export default {
     },
     getUid (state, payload) {
       state.getUid = payload
+    },
+    editProfile (state, payload) {
+      state.user = payload
     }
   },
   actions: {
@@ -109,6 +112,29 @@ export default {
     async logOut ({ commit }) {
       await firebase.auth().signOut()
       commit('logOut')
+    },
+    // edit profile
+    async changePass ({ commit }, payload) {
+      try {
+        const user = firebase.auth().currentUser
+        await user.updatePassword(payload)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async editProfile ({ dispatch, commit }, payload) {
+      try {
+        const uid = await dispatch('getUid')
+        const ans = await firebase.database().ref(`users/${uid}`).update(payload)
+        console.log(ans)
+        const user = {
+          ...payload,
+          id: uid
+        }
+        commit('editProfile', user)
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <v-navigation-drawer class="category" v-model="drawer" color="primary" fixed temporary>
       <v-list class="font-weight-light">
-        <v-list-item two-line class="mt-15 pt-10">
+        <v-list-item two-line class="mt-5 pt-10">
           <h1 class="category-title">Категории</h1>
         </v-list-item>
 
@@ -22,29 +22,34 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-
-    <v-app-bar app clipped height="100px" fixed>
+    <v-app-bar fixed app clipped>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-container>
         <v-row align="center" justify="center">
-          <v-col xl="8" lg="8" md="7" cols="5">
+          <v-col xl="8" lg="8" md="7" cols="8" class="px-0">
             <v-row justify="center">
-              <v-col xl="7" lg="7" cols="12">
+              <v-col align-self="center" xl="6" lg="8" cols="12">
                 <router-link to="/">
                   <v-img :src="require('@/assets/logo.png')" alt="logo" title="OMDESIGN" />
                 </router-link>
               </v-col>
-              <v-col xl="4" lg="4" cols="3" class="d-none d-md-none d-sm-none d-lg-flex">
-                <h1 class="font-weight-light text-h6 align-self-center">
+              <v-col xl="4" lg="4" cols="0" class="d-none d-md-none d-sm-none d-lg-flex">
+                <h2 class="font-weight-light text-subtitle-1 align-self-center">
                   МАГАЗИН
                   <br />АВТОРСКИХ ПРИНТОВ
-                </h1>
+                </h2>
               </v-col>
             </v-row>
           </v-col>
-          <v-col xl="2" lg="3" md="3" cols="7" align-self="center">
-            <v-row justify="center" align="center">
-              <v-col cols="6" align="center">
+          <v-col xl="2" lg="3" md="3" cols="4" align-self="center" class="pr-0">
+            <v-row
+              justify-xl="center"
+              justify-lg="center"
+              justify-md="center"
+              justify="start"
+              align="center"
+            >
+              <v-col cols="4" align="left" class="px-0">
                 <router-link to="/cart">
                   <v-btn icon title="Корзина">
                     <v-badge color="secondary" :content="countInCart" :value="countInCart">
@@ -53,9 +58,9 @@
                   </v-btn>
                 </router-link>
               </v-col>
-              <v-col cols="6" align="left">
+              <v-col cols="4" align="left" class="px-0">
                 <v-btn @click="menu = !menu" icon title="Навигация">
-                  <v-icon>mdi-navigation</v-icon>
+                  <v-icon>mdi-home</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
@@ -124,7 +129,6 @@ export default {
   async mounted () {
     // ПОТОМ взывать диспатч с сервера
     await this.$store.dispatch('users/getInfo')
-    this.user = this.$store.getters['users/info']
     this.isLogin = this.$store.getters['users/getUid'] !== null
     await this.$store.dispatch('cart/loadCart', this.isLogin)
     await this.$store.dispatch('category/read')
@@ -157,8 +161,7 @@ export default {
           title: 'Акции',
           link: '/discounts'
         }
-      ],
-      user: {}
+      ]
     }
   },
   computed: {
@@ -170,6 +173,9 @@ export default {
     },
     categories () {
       return this.$store.getters['category/categories']
+    },
+    user () {
+      return this.$store.getters['users/info']
     }
   },
   methods: {
@@ -185,7 +191,6 @@ export default {
         await this.$store.commit('cart/updCart', [])
         await this.$store.dispatch('cart/loadCart', this.isLogin)
         this.isLogin = this.$store.getters['users/getUid'] !== null
-        this.user = {}
         this.loading = false
         this.$router.push('/')
       } catch (error) {
