@@ -66,10 +66,22 @@ const routes = [
     component: () => import('@/views/Content/Account.vue')
   },
   {
-    path: '/account/Edit',
+    path: '/account/edit',
     name: 'EditProfile',
     meta: { layout: 'content', auth: true },
     component: () => import('@/views/Content/EditProfile.vue')
+  },
+  {
+    path: '/account/review',
+    name: 'ReviewProfile',
+    meta: { layout: 'content', auth: true },
+    component: () => import('@/views/Content/ReviewProfile.vue')
+  },
+  {
+    path: '/account/wishlist',
+    name: 'WishlistProfile',
+    meta: { layout: 'content', auth: true },
+    component: () => import('@/views/Content/WishlistProfile.vue')
   },
   {
     path: '/cart',

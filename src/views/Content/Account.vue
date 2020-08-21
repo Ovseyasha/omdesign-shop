@@ -34,7 +34,11 @@
         </v-row>
         <v-row>
           <v-btn class="font-weight-light" router-link to="/account/wishlist" tile large block text>
-            <v-badge color="secondary" :content="user.wishList ? user.wishList.length : 0">Избранное</v-badge>
+            <v-badge
+              color="secondary"
+              :value="user.wishList ? user.wishList.length : 0"
+              :content="user.wishList ? user.wishList.length : 0"
+            >Избранное</v-badge>
           </v-btn>
         </v-row>
       </v-col>
@@ -80,13 +84,17 @@
           <v-col xl="2" lg="2" md="2" cols="12">
             <v-row>
               <v-col cols="12">
-                <span class="secondary--text">{{o.state}}</span>
+                <span
+                  :class="o.state === 'Новый заказ' ? 'secondary--text' : o.state === 'Заказ в пути' ? 'warning--text' : 'primary--text' "
+                >{{o.state}}</span>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12">
                 Дата доставки:
-                <span class="secondary--text ml-2">{{o.dateDeliv}}</span>
+                <span
+                  class="secondary--text ml-2"
+                >{{new Date(o.dateDeliv).toLocaleDateString() }}</span>
               </v-col>
             </v-row>
             <v-row>
@@ -138,6 +146,7 @@ export default {
     }
   },
   computed: {
+
   }
 }
 </script>

@@ -1,13 +1,18 @@
 <template>
   <Loader v-if="loading" />
   <v-col v-else xl="10" lg="10" md="10" cols="12" class="font-weight-light">
-    <v-row justify="center">
-      <h1 class="font-weight-thin">Редактирование профиля</h1>
-      <v-btn tile class="font-weight-light" block x-large @click="modal = !modal">Изменить пароль</v-btn>
+    <v-row>
+      <v-col cols="12">
+        <v-btn icon color="secondary" x-large router-link to="/account">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+        <h1 class="ml-2 mb-15 font-weight-thin">Редактирование профиля</h1>
+        <v-btn tile class="font-weight-light" block x-large @click="modal = !modal">Изменить пароль</v-btn>
+      </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
-        <form class="form">
+        <v-form class="form">
           <v-row justify="center">
             <v-col xl="6" lg="6" cols="12">
               <v-text-field label="Имя" v-model="user.name" required></v-text-field>
@@ -22,6 +27,7 @@
               <v-text-field label="Квартира" v-model="user.apartament" required></v-text-field>
             </v-col>
           </v-row>
+          <small v-if="error === 'Заполните все поля!'" class="error--text">{{error}}</small>
           <v-btn
             class="font-weight-light"
             x-large
@@ -30,7 +36,7 @@
             tile
             @click="submit"
           >Сохранить</v-btn>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
     <v-dialog v-model="modal" persistent max-width="600px">
