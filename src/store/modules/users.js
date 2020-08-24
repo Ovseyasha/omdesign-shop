@@ -36,6 +36,7 @@ export default {
         await firebase.auth().createUserWithEmailAndPassword(user.email, user.pass)
         const uid = await dispatch('getUid')
         delete user.pass
+        user.rules = 'user'
         await firebase.database().ref(`/users/${uid}/`).set(user)
         const fileName = user.avatar.name
         const ext = fileName.slice(fileName.lastIndexOf('.'))

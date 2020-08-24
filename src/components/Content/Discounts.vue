@@ -8,7 +8,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-carousel height="auto" show-arrows-on-hover hide-delimiters>
+        <v-carousel height="100%" show-arrows-on-hover hide-delimiters>
           <v-carousel-item v-for="(slide, i) in slides" :key="i" :src="slide.url"></v-carousel-item>
         </v-carousel>
       </v-row>
@@ -21,6 +21,7 @@ export default {
   async mounted () {
     // dispatch from server
     await this.$store.dispatch('discounts/read')
+
     this.loading = false
   },
   data () {
@@ -30,7 +31,7 @@ export default {
   },
   computed: {
     slides () {
-      return this.$store.getters['discounts/getList']
+      return this.$store.getters['discounts/getList'] || []
     }
   }
 }

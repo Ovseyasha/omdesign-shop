@@ -1,32 +1,57 @@
+
+import firebase from 'firebase/app'
+
 export default {
   namespaced: true,
   state: {
-    cells: [
-      {
-        format: 'photo',
-        title: false,
-        content: 'https://sun9-75.userapi.com/c855532/v855532769/24743e/3BO2LSKE3Fk.jpg'
-      },
-      {
-        format: 'text',
-        title: false,
-        content: 'С другой стороны сложившаяся структура организации играет важную роль в формировании модели развития. Равным образом рамки и место обучения кадров представляет собой интересный эксперимент проверки новых предложений.'
-      },
-      {
-        format: 'text',
-        title: 'Заголовок',
-        content: 'С другой стороны сложившаяся структура организации играет важную роль в формировании модели развития. Равным образом рамки и место обучения кадров представляет собой интересный эксперимент проверки новых предложений.'
-      },
-      {
-        format: 'photo',
-        title: false,
-        content: 'https://sun9-75.userapi.com/c855532/v855532769/24743e/3BO2LSKE3Fk.jpg'
-      }
-    ]
+    cells: []
   },
   getters: {
-
+    cells (state) {
+      return state.cells
+    }
   },
-  mutations: {},
-  actions: {}
+  mutations: {
+    set (state, payload) {
+      state.cells = payload
+    },
+    read (state, payload) {
+      state.cells = payload
+    }
+  },
+  actions: {
+    async read ({ commit }) {
+      try {
+        const about = (await firebase.database().ref('about').once('value')).val()
+        commit('read', about)
+      } catch (error) {
+
+      }
+    },
+    async set ({ commit }, payload) {
+      try {
+        for (let i = 0; i < payload.length; i++) {
+          if (payload[i].content.url) {
+            if (typeof (payload[i].content.url) !== 'string') {
+              // delete old
+              if (payload[i].content.fileName) {
+                await firebase.storage().ref().child(`about/content/${payload[i].content.fileName}`).delete()
+              }
+              // create new
+              const slideName = Math.random() + payload[i].content.url.name
+              const slideFile = payload[i].content.url
+              const storages = await firebase.storage().ref(`about/content/${slideName}`).put(slideFile)
+              const slideUrl = await storages.ref.getDownloadURL()
+              payload[i].content.url = slideUrl
+              payload[i].content.fileName = slideName
+            }
+          }
+        }
+        await firebase.database().ref('about').set(payload)
+        commit('set', payload)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 }

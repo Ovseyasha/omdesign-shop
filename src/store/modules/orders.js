@@ -20,12 +20,40 @@ export default {
     },
     readByUserId (state, payload) {
       state.userOrders = payload
+    },
+    readList (state, payload) {
+      state.orders = payload
+    },
+    update (state, { id, v }) {
+      state.orders.forEach((o, i) => {
+        if (o.id === id) {
+          state.orders[i].state = v
+        }
+      })
+    },
+    delete (state, { id }) {
+      state.orders.forEach((o, i) => {
+        if (o.id === id) {
+          state.orders.splice(i, 1)
+        }
+      })
     }
   },
   actions: {
-    async readList () {
+    async readList ({ commit }) {
       try {
-
+        const orders = (await firebase.database().ref('orders').once('value')).val()
+        const o = []
+        Object.keys(orders).forEach(key => {
+          const nO = orders[key]
+          o.push(
+            {
+              ...nO,
+              id: key
+            }
+          )
+        })
+        commit('readList', o)
       } catch (error) {
         console.log(error)
       }
@@ -54,16 +82,18 @@ export default {
         console.log(error)
       }
     },
-    async update () {
+    async update ({ commit }, { id, v }) {
       try {
-
+        await firebase.database().ref(`orders/${id}/state`).set(v)
+        commit('update', { id, v })
       } catch (error) {
         console.log(error)
       }
     },
-    async delete () {
+    async delete ({ commit }, { id }) {
       try {
-
+        await firebase.database().ref(`orders/${id}`).remove()
+        commit('delete', { id })
       } catch (error) {
         console.log(error)
       }

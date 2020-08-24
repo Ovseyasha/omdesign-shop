@@ -45,6 +45,13 @@
     </v-row>
     <v-row>
       <v-col cols="12">
+        <router-link to="/admin" v-if="user.rules === 'admin' " class="secondary--text">
+          <v-btn tile block color="primary" class="font-weight-light">АдминПанель</v-btn>
+        </router-link>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
         <h1 class="font-weight-light mt-15">
           <v-badge
             color="primary"
@@ -134,7 +141,7 @@ export default {
         p.info = this.$store.getters['products/productById'](p.id)
       })
     })
-    this.orders = uOr
+    this.orders = uOr.reverse()
     this.loading = false
   },
   data () {

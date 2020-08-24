@@ -19,9 +19,9 @@ export default {
     lastProducts (state) {
       return state.products.filter(product => product.isNew === true)
     },
-    productsByCategory: state => categoryName => {
+    productsByCategory: state => id => {
       return state.products.filter(product => {
-        return product.category.toLowerCase() === categoryName.toLowerCase()
+        return product.category.id === id
       })
     },
     myReviews (state) {
@@ -33,8 +33,20 @@ export default {
     read (state, payload) {
       state.products = payload
     },
-    update () { },
-    delete () { },
+    update (state, { id, product }) {
+      state.products.forEach((p, i) => {
+        if (p.id === id) {
+          state.products[i] = product
+        }
+      })
+    },
+    delete (state, { id }) {
+      state.products.forEach((p, i) => {
+        if (p.id === id) {
+          state.products.splice(i, 1)
+        }
+      })
+    },
     readReviewById (state, payload) {
       state.myReviews = payload
     }
@@ -62,10 +74,15 @@ export default {
     },
     async read ({ commit }, payload) {
       try {
+        await store.dispatch('category/read')
         const products = (await firebase.database().ref('products').once('value')).val()
         const uProducts = []
         if (products !== null) {
           Object.keys(products).forEach(key => {
+            if (typeof (products[key].category) === 'string') {
+              const id = products[key].category
+              products[key].category = store.getters['category/getCategoryName'](id)
+            }
             const s = products[key]
             uProducts.push({
               ...s,
@@ -73,12 +90,51 @@ export default {
             })
           })
         }
+        // console.log(uProducts)
         commit('read', uProducts)
       } catch (error) {
         console.log(error)
       }
     },
-    delete () { },
+    async update ({ commit }, { product, id, deletedName }) {
+      try {
+        if (deletedName.length > 0) {
+          for (let i = 0; i < deletedName.length; i++) {
+            const storage = firebase.storage()
+            const storageRef = storage.ref()
+            const desertRef = storageRef.child(`products/${id}/slides/${deletedName[i]}`)
+            await desertRef.delete()
+          }
+        }
+        for (let i = 0; i < product.photos.length; i++) {
+          if (typeof (product.photos[i].img) !== 'string') {
+            const slideName = Math.random() + product.photos[i].fileName
+            const slideFile = product.photos[i].img
+            const storagesSlide = await firebase.storage().ref(`products/${id}/slides/${slideName}`).put(slideFile)
+            const slideUrl = await storagesSlide.ref.getDownloadURL()
+            product.photos[i].img = slideUrl
+            product.photos[i].fileName = slideName
+          }
+        }
+        await firebase.database().ref('products').child(id).update(product)
+        commit('update', { id, product })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async delete ({ commit }, { product }) {
+      try {
+        const id = product.id
+        console.log(product.photos)
+        product.photos.forEach(async p => {
+          await firebase.storage().ref().child(`products/${id}/slides/${p.fileName}`).delete()
+        })
+        await firebase.database().ref(`products/${id}`).remove()
+        commit('delete', { id })
+      } catch (error) {
+        console.log(error)
+      }
+    },
     // products feedback
     async createReview ({ commit, dispatch }, payload) {
       try {

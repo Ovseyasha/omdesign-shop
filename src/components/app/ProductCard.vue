@@ -7,7 +7,12 @@
           <router-link class="card__name" :to="`/products/${product.id}`">
             <v-list-item-title class="font-weight-light headline">{{product.name}}</v-list-item-title>
           </router-link>
-          <v-list-item-subtitle>{{product.category | ucFirst}}</v-list-item-subtitle>
+          <v-list-item-subtitle>
+            <router-link
+              class="secondary--text"
+              :to="`/category/${product.category.id}`"
+            >{{product.category.name | ucFirst}}</router-link>
+          </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
       <router-link :to="`/products/${product.id}`">
@@ -43,6 +48,8 @@ export default {
     }
   },
   methods: {
+  },
+  computed: {
   },
   components: {
     BtnForCart,

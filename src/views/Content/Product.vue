@@ -4,10 +4,10 @@
     <div v-if="product.isNew" class="isNew px-5">Новинка!</div>
     <v-row justify="center">
       <v-col xl="4" lg="4" md="5" sm="12" cols="12">
-        <v-carousel height="auto">
+        <v-carousel height="auto" hide-delimiter-background hide-delimiters>
           <v-carousel-item v-for="(item,i) in product.photos" :key="i">
-            <p class="secondary--text font-weight-light">{{item.title}}</p>
             <v-img :src="item.img"></v-img>
+            <p class="secondary--text font-weight-light pt-2">{{item.title}}</p>
           </v-carousel-item>
         </v-carousel>
       </v-col>
@@ -21,9 +21,11 @@
         <v-row justify="space-between" class="mb-5">
           <v-col xl="6" lg="6" cols="12" align-self="center">
             <span class="text-h5 font-weight-light">Категория:</span>
-            <span
-              class="text-h5 font-weight-light secondary--text ml-2"
-            >{{product.category | ucFirst}}</span>
+            <router-link :to="`/category/${product.category.id}`">
+              <span
+                class="text-h5 font-weight-light secondary--text ml-2"
+              >{{product.category.name | ucFirst}}</span>
+            </router-link>
           </v-col>
           <v-col xl="6" lg="6" cols="12" align-self="center">
             <span class="text-h5 font-weight-light">Наличие:</span>

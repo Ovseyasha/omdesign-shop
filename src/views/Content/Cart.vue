@@ -29,7 +29,7 @@
                   <h2 class="font-weight-light">{{product.name}}</h2>
                 </router-link>
 
-                <p>{{product.category | ucFirst}}</p>
+                <p>{{product.category.name | ucFirst}}</p>
               </v-col>
               <v-col xl="1" lg="1" md="12" sm="12" cols="12" align="center">
                 <template v-if="product.sizes">

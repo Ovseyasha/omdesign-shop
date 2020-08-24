@@ -73,7 +73,7 @@ export default {
           return category.name
         }
       })
-      let prod = this.$store.getters['products/productsByCategory'](ans.name)
+      let prod = this.$store.getters['products/productsByCategory'](ans.id)
       switch (this.sortByPrice) {
         case 'Сначала дешевые':
           prod.sort((a, b) => {

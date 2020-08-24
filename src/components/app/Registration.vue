@@ -151,7 +151,6 @@ export default {
         building: '',
         apartament: '',
         wishList: '',
-        rules: 'user',
         listOrder: '',
         reviews: ''
       }

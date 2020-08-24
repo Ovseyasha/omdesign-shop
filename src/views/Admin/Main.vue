@@ -1,5 +1,5 @@
 <template>
-  <div>l d</div>
+  <div>мета теги основных страниц</div>
 </template>
 
 <script>

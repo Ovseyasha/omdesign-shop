@@ -2,11 +2,15 @@
   <Loader v-if="loading" />
   <v-col v-else xl="10" lg="10" md="10" cols="12" class="font-weight-light">
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" class="d-flex">
         <v-btn icon color="secondary" x-large router-link to="/account">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <h1 class="ml-2 mb-15 font-weight-thin">Редактирование профиля</h1>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
         <v-btn tile class="font-weight-light" block x-large @click="modal = !modal">Изменить пароль</v-btn>
       </v-col>
     </v-row>

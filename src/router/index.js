@@ -127,28 +127,16 @@ const routes = [
     component: () => import('@/views/Admin/Categories/List.vue')
   },
   {
-    path: '/admin/categories/add',
-    name: 'AdminCategoriesAdd',
-    meta: { layout: 'admin', auth: true, admin: true },
-    component: () => import('@/views/Admin/Categories/Add.vue')
-  },
-  {
-    path: '/admin/categories/edit/:id',
-    name: 'AdminCategoriesEdit',
-    meta: { layout: 'admin', auth: true, admin: true },
-    component: () => import('@/views/Admin/Categories/Edit.vue')
-  },
-  {
     path: '/admin/orders',
     name: 'AdminOrders',
     meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Orders/List.vue')
   },
   {
-    path: '/admin/orders/view/:id',
-    name: 'AdminOrdersView',
+    path: '/admin/contacts',
+    name: 'AdminContacts',
     meta: { layout: 'admin', auth: true, admin: true },
-    component: () => import('@/views/Admin/Orders/View.vue')
+    component: () => import('@/views/Admin/Contacts/List.vue')
   },
   {
     path: '/admin/blog',
@@ -185,6 +173,12 @@ const routes = [
     name: 'AdminDiscountsEdit',
     meta: { layout: 'admin', auth: true, admin: true },
     component: () => import('@/views/Admin/Discounts/Edit.vue')
+  },
+  {
+    path: '/admin/about',
+    name: 'AdminAbout',
+    meta: { layout: 'admin', auth: true, admin: true },
+    component: () => import('@/views/Admin/About.vue')
   }
 ]
 

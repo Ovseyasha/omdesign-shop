@@ -1,56 +1,54 @@
 <template>
-  <v-container>
-    <Loader v-if="loading" />
-    <v-row v-else>
-      <v-col>
-        <v-card class="mx-auto" tile>
-          <v-card-text>
-            <v-card-title>Добавление продукта</v-card-title>
-            <v-card-subtitle>Подзаголовок</v-card-subtitle>
-            <v-card-actions>
-              <form style="width: 100%">
-                <v-text-field v-model="product.name" label="Название" required></v-text-field>
-                <v-select
-                  v-model="product.category"
-                  :items="categories"
-                  item-text="name"
-                  label="Категория"
-                  required
-                ></v-select>
-                <v-select v-model="product.status" :items="status" label="Наличие" required></v-select>
-                <v-text-field v-model="product.price" label="Цена" required></v-text-field>
-                <v-combobox
-                  v-model="product.sizes"
-                  :items="product.sizes"
-                  hide-selected
-                  label="Добавить размер"
-                  multiple
-                  persistent-hint
-                  small-chips
-                >
-                  <template v-slot:no-data>
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title>
-                          Нажми
-                          <kbd>enter</kbd> что бы добавить размер
-                        </v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
-                </v-combobox>
-                <v-divider class="mt-10"></v-divider>
-                <SlideEditor :slides="product.photos" @changed="slideChange" />
-                <h2 class="font-weight-light text-center mb-5">Описание</h2>
-                <SubsEditor :subs="product.desc" @change="loadSubs" />
-                <v-btn class="mr-4" @click="submit" tile x-large block>Сохранить</v-btn>
-              </form>
-            </v-card-actions>
-          </v-card-text>
-        </v-card>
+  <Loader v-if="loading" />
+  <v-col cols="12" v-else>
+    <v-row>
+      <v-col cols="12">
+        <h1 class="font-weight-thin text-center">Содание продукта</h1>
       </v-col>
     </v-row>
-  </v-container>
+    <v-row justify="center">
+      <v-col xl="10" lg="10" md="10" cols="12">
+        <form style="width: 100%">
+          <v-text-field v-model="product.name" label="Название" required></v-text-field>
+          <v-select
+            v-model="product.category"
+            :items="categories"
+            item-text="name"
+            item-value="id"
+            label="Категория"
+            required
+          ></v-select>
+          <v-select v-model="product.status" :items="status" label="Наличие" required></v-select>
+          <v-text-field v-model="product.price" label="Цена" required></v-text-field>
+          <v-combobox
+            v-model="product.sizes"
+            :items="product.sizes"
+            hide-selected
+            label="Добавить размер"
+            multiple
+            persistent-hint
+            small-chips
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Нажми
+                    <kbd>enter</kbd> что бы добавить размер
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-combobox>
+          <v-divider class="mt-10"></v-divider>
+          <SlideEditor :slides="product.photos" @changed="slideChange" />
+          <h2 class="font-weight-light text-center mb-5">Описание</h2>
+          <SubsEditor :subs="product.desc" @change="loadSubs" />
+          <v-btn class="mr-4 font-weight-light" @click="submit" tile x-large block>Сохранить</v-btn>
+        </form>
+      </v-col>
+    </v-row>
+  </v-col>
 </template>
 
 <script>
@@ -132,6 +130,7 @@ export default {
           feedback: []
         }
         this.loading = false
+        this.$router.push('/admin/products')
       } catch (error) {
         console.log(error)
       }

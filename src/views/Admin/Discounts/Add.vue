@@ -1,8 +1,8 @@
 <template>
-  <v-col cols="6">
+  <v-col xl="6" lg="6" md="6" cols="12">
     <Loader v-if="loading" />
     <form v-else>
-      <ChangeImg :img="''" @changed-img="changeImg" />
+      <ChangeImg :discount="true" :img="''" @changed-img="changeImg" />
       <SubsEditor :subs="desc" @change="loadSubs" />
       <v-date-picker full-width v-model="endDate" locale="Ru" class="mb-5"></v-date-picker>
       <v-btn color="primary" tile x-large block @click="submit">Сохранить</v-btn>
@@ -43,6 +43,7 @@ export default {
         this.desc = ['']
         this.endDate = null
         this.loading = false
+        this.$router.push('/admin/discounts')
       } catch (error) {
         console.log(error)
       }

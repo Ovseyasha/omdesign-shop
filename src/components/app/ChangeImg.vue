@@ -1,13 +1,18 @@
 <template>
   <div class="change">
-    <img :src="img" alt="avatar" class="change__img" v-if="imageUrl == '' && img !== '' " />
+    <img
+      :src="img"
+      alt="avatar"
+      :class="discount ? 's': 'change__img'"
+      v-if="imageUrl == '' && img !== '' "
+    />
     <img
       :src="require('@/assets/default.jpg')"
       alt="avatar"
-      class="change__img"
+      :class="discount ? 's': 'change__img'"
       v-else-if="imageUrl == '' && img === ''"
     />
-    <img :src="imageUrl" alt="avatar" class="change__img" v-else />
+    <img :src="imageUrl" alt="avatar" :class="discount ? 's': 'change__img'" v-else />
     <div class="change__item">
       <div class="change__file">{{filename}}</div>
       <input
@@ -29,7 +34,7 @@
 
 <script>
 export default {
-  props: ['img'],
+  props: ['img', 'discount'],
   data () {
     return {
       imageUrl: '',
@@ -98,6 +103,10 @@ export default {
     }
     margin: 20px 0;
     padding: 10px;
+  }
+  .s {
+    width: 300px;
+    height: 100px;
   }
 }
 </style>

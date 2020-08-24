@@ -1,5 +1,5 @@
 <template>
-  <div>edy cat</div>
+  <div>l o</div>
 </template>
 
 <script>

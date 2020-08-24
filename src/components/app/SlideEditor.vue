@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-row>
           <v-col cols="12">
-            <v-text-field v-model="title" label="Название фотографии" required></v-text-field>
+            <v-text-field v-model="title" label="Название фотографии"></v-text-field>
           </v-col>
         </v-row>
         <v-row justify="center">

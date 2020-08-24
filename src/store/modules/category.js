@@ -7,23 +7,46 @@ export default {
   getters: {
     categories (state) {
       return state.categories
+    },
+    getCategoryName: state => id => {
+      return state.categories.find(category => {
+        console.log()
+        if (category.id === id) {
+          return category
+        }
+      })
     }
-    // getCategoryName: state => id => {
-    //   return state.categories.find(category => {
-    //     return category.id === +id
-    //   })
-    // }
   },
   mutations: {
+    create (state, payload) {
+      state.categories.push(payload)
+    },
     read (state, payload) {
       state.categories = payload
+    },
+    update (state, { name, id }) {
+      state.categories.forEach(c => {
+        if (c.id === id) {
+          c.name = name
+        }
+      })
+    },
+    delete (state, payload) {
+      state.categories.forEach((c, i) => {
+        if (c.id === payload) {
+          state.categories.splice(i, 1)
+        }
+      })
     }
   },
   actions: {
-    async create ({ dispatch, commit, state }, payload) {
+    async create ({ commit, state }, payload) {
       try {
-        await firebase.database().ref('categories').push(payload)
-        await dispatch('read')
+        const cat = await firebase.database().ref('categories').push(payload)
+        commit('create', {
+          name: payload,
+          id: cat.key
+        })
       } catch (error) {
 
       }
@@ -42,7 +65,21 @@ export default {
       }
       commit('read', categories)
     },
-    update () { },
-    delete () { }
+    async update ({ commit }, { name, id }) {
+      try {
+        await firebase.database().ref(`categories/${id}`).set(name)
+        commit('update', { name, id })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async delete ({ commit }, payload) {
+      try {
+        await firebase.database().ref(`categories/${payload}`).remove()
+        commit('delete', payload)
+      } catch (error) {
+
+      }
+    }
   }
 }
