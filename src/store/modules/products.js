@@ -151,18 +151,20 @@ export default {
           date: new Date().toLocaleDateString()
         }
         const review = await firebase.database().ref(`products/${payload.id}/feedback`).push(sendReview)
-        for (let i = 0; i < payload.review.photos.length; i++) {
-          const slideName = Math.random() + payload.review.photos[i].img.name
-          const slideFile = payload.review.photos[i].img
-          const storagesSlide = await firebase.storage().ref(`products/${payload.id}/feedback/${review.key}/${slideName}`).put(slideFile)
-          const slideUrl = await storagesSlide.ref.getDownloadURL()
-          const title = payload.review.photos[i].title
-          payload.review.photos[i].fileName = slideName
-          await firebase.database().ref(`products/${payload.id}/feedback/${review.key}/photos/${i}`).update({
-            img: slideUrl,
-            title,
-            fileName: slideName
-          })
+        if (payload.review.photos !== null) {
+          for (let i = 0; i < payload.review.photos.length; i++) {
+            const slideName = Math.random() + payload.review.photos[i].img.name
+            const slideFile = payload.review.photos[i].img
+            const storagesSlide = await firebase.storage().ref(`products/${payload.id}/feedback/${review.key}/${slideName}`).put(slideFile)
+            const slideUrl = await storagesSlide.ref.getDownloadURL()
+            const title = payload.review.photos[i].title
+            payload.review.photos[i].fileName = slideName
+            await firebase.database().ref(`products/${payload.id}/feedback/${review.key}/photos/${i}`).update({
+              img: slideUrl,
+              title,
+              fileName: slideName
+            })
+          }
         }
         await dispatch('read')
       } catch (error) {

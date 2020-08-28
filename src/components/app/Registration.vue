@@ -114,7 +114,12 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="reg" tile>Зарегистрироваться</v-btn>
+                <v-btn
+                  color="primary"
+                  class="font-weight-light"
+                  @click="reg"
+                  tile
+                >Зарегистрироваться</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -127,7 +132,9 @@
 <script>
 import { required, email, minLength } from 'vuelidate/lib/validators'
 import ChangeImg from '@/components/app/ChangeImg'
-import Messager from '@/components/app/Messager'
+
+import messages from '@/utils/messages'
+
 export default {
   data () {
     return {
@@ -226,14 +233,13 @@ export default {
         this.loading = false
         this.$router.push('/')
       } catch (error) {
-        this.error = error.code
+        this.error = messages[error.code]
         this.loading = false
       }
     }
   },
   components: {
-    ChangeImg,
-    Messager
+    ChangeImg
   }
 }
 </script>

@@ -44,15 +44,17 @@ export default {
       try {
         const orders = (await firebase.database().ref('orders').once('value')).val()
         const o = []
-        Object.keys(orders).forEach(key => {
-          const nO = orders[key]
-          o.push(
-            {
-              ...nO,
-              id: key
-            }
-          )
-        })
+        if (orders !== null) {
+          Object.keys(orders).forEach(key => {
+            const nO = orders[key]
+            o.push(
+              {
+                ...nO,
+                id: key
+              }
+            )
+          })
+        }
         commit('readList', o)
       } catch (error) {
         console.log(error)

@@ -23,16 +23,26 @@
 export default {
   async mounted () {
     await this.$store.dispatch('about/read')
+    await this.$store.dispatch('meta/read')
+    this.title = this.$store.getters['meta/list'][2].title
+    this.desc = this.$store.getters['meta/list'][2].desc
     this.loading = false
   },
   data () {
     return {
-      loading: true
+      loading: true,
+      title: '',
+      desc: ''
     }
   },
   computed: {
     cells () {
       return this.$store.getters['about/cells']
+    }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + this.title.toUpperCase()
     }
   }
 }

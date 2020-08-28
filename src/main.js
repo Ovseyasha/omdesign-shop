@@ -9,6 +9,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 // global components
 import Loader from '@/components/app/Loader'
+import Messager from '@/components/app/Messager'
 import Paginate from 'vuejs-paginate'
 // global filters
 import ucFirst from '@/filters/ucFirst.filter'
@@ -22,6 +23,7 @@ import 'firebase/analytics'
 
 // init global components
 Vue.component('Loader', Loader)
+Vue.component('Messager', Messager)
 Vue.component('Paginate', Paginate)
 // init plugins
 Vue.use(VueMeta)

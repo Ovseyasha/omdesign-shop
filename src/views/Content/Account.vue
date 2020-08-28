@@ -154,6 +154,11 @@ export default {
   },
   computed: {
 
+  },
+  metaInfo () {
+    return {
+      title: '| ' + 'ЛИЧНЫЙ КАБИНЕТ'
+    }
   }
 }
 </script>

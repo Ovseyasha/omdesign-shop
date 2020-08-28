@@ -9,6 +9,8 @@ import about from './modules/about'
 import discounts from './modules/discounts'
 import users from './modules/users'
 import orders from './modules/orders'
+import contact from './modules/contact'
+import meta from './modules/meta'
 
 Vue.use(Vuex)
 
@@ -21,6 +23,8 @@ export default new Vuex.Store({
     about,
     discounts,
     users,
-    orders
+    orders,
+    contact,
+    meta
   }
 })

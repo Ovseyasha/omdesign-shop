@@ -136,6 +136,14 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    async reset ({ commit }, payload) {
+      try {
+        await firebase.auth().sendPasswordResetEmail(payload)
+      } catch (error) {
+        console.log(error)
+        throw error
+      }
     }
   }
 }

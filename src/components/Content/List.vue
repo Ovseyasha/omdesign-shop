@@ -309,12 +309,12 @@
             <p>{{d.endDate}}</p>
           </v-col>
           <v-col cols="4" align="center">
-            <v-btn x-large icon router :to="`/admin/discounts/edit/${index}`">
+            <v-btn x-large icon router :to="`/admin/discounts/edit/${d.id}`">
               <v-icon>mdi-clipboard-edit-outline</v-icon>
             </v-btn>
           </v-col>
           <v-col cols="4" align="center">
-            <v-btn x-large icon @click="deleteDiscount(d, index)">
+            <v-btn x-large icon @click="deleteDiscount(d)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-col>
@@ -334,6 +334,60 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-row>
+    <v-row v-if="mode === 'Сообщений'  && !editing">
+      <v-col cols="12">
+        <v-row
+          v-for="(m,index) in items"
+          :key="index"
+          :class="{new: m.isNew}"
+          class="mail"
+          @click="openMail(m.id)"
+        >
+          <v-col cols="1">
+            <v-badge v-if="m.isNew" color="secondary" dot></v-badge>
+          </v-col>
+          <v-col xl="2" lg="2" md="2" cols="11">
+            <p class="secondary--text">{{m.email}}</p>
+          </v-col>
+          <v-col xl="7" lg="7" md="7" cols="10" class="d-flex">
+            <span>{{m.subject}}</span>
+            <p class="ml-2 text-truncate info--text">{{m.message}}</p>
+          </v-col>
+          <v-col xl="2" lg="2" md="2" cols="2" align="center">
+            <v-btn @click.stop="deleteMail(m.id)" x-large icon>
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
+      <v-dialog v-model="modalMail" max-width="500">
+        <v-card class="font-weight-light">
+          <v-card-title class="headline font-weight-light">
+            <span class="mr-2">От:</span>
+            <a class="secondary--text" :href="`mailto:${mail.email}`">{{mail.name}}</a>
+          </v-card-title>
+          <v-card-text class="font-weight-light">
+            <p>
+              <span class="mr-2 secondary--text">Тема:</span>
+              <span>{{mail.subject}}</span>
+            </p>
+            <v-divider></v-divider>
+            <p class="mt-2">{{mail.message}}</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              class="font-weight-light"
+              block
+              color="secondary"
+              tile
+              text
+              @click="modalMail = false"
+            >Закрыть</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-col>
 </template>
 
@@ -342,6 +396,9 @@ export default {
   props: ['items', 'mode'],
   data () {
     return {
+      // contact
+      modalMail: false,
+      mail: {},
       // orders
       states: ['Новый заказ', 'Заказ в пути', 'Заказ доставлен'],
       orderModal: false,
@@ -358,24 +415,41 @@ export default {
       return a.length > 0 ? a.reverse() : []
     },
     count () {
-      let c = this.items ? this.items.length : 0
-      if (this.items) {
-        if (typeof (this.items) === 'object') {
-          c = Object.keys(this.items).length
-        }
-      }
-      return c
+      return this.items ? this.items.length : 0
     }
   },
   methods: {
-    // discounts
-    async deleteDiscount (d, id) {
+    // contact
+    async deleteMail (i) {
       try {
         this.editing = true
-        await this.$store.dispatch('discounts/delete', { discount: d, id })
+        await this.$store.dispatch('contact/delete', i)
         this.editing = false
       } catch (error) {
 
+      }
+    },
+    async openMail (id) {
+      try {
+        this.items.forEach(m => {
+          if (m.id === id) {
+            this.mail = m
+          }
+        })
+        this.modalMail = true
+        await this.$store.dispatch('contact/update', id)
+      } catch (error) {
+
+      }
+    },
+    // discounts
+    async deleteDiscount (d) {
+      try {
+        this.editing = true
+        await this.$store.dispatch('discounts/delete', { discount: d, id: d.id })
+        this.editing = false
+      } catch (error) {
+        console.log(error)
       }
     },
     // blog
@@ -472,5 +546,14 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+.mail {
+  cursor: pointer;
+  @media (max-width: 600px) {
+    border-bottom: 0.5px solid grey;
+  }
+  &:hover {
+    background-color: darken(#fff, 80%);
+  }
+}
 </style>

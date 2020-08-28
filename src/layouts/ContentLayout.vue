@@ -106,7 +106,7 @@
 
         <v-divider></v-divider>
         <v-list-item-group>
-          <v-list-item v-for="t in tabs" :key="t.link" link router :to="t.link">
+          <v-list-item v-for="t in tabs" :key="t.url" link router :to="t.url">
             <v-list-item-content>
               <v-list-item-title>{{ t.title }}</v-list-item-title>
             </v-list-item-content>
@@ -128,6 +128,7 @@
 export default {
   async mounted () {
     // ПОТОМ взывать диспатч с сервера
+    await this.$store.dispatch('meta/read')
     await this.$store.dispatch('users/getInfo')
     this.isLogin = this.$store.getters['users/getUid'] !== null
     await this.$store.dispatch('cart/loadCart', this.isLogin)
@@ -139,29 +140,7 @@ export default {
       loading: true,
       drawer: false,
       menu: false,
-      isLogin: '',
-      tabs: [
-        {
-          title: 'Главная',
-          link: '/'
-        },
-        {
-          title: 'Блог',
-          link: '/blog'
-        },
-        {
-          title: 'О магазине',
-          link: '/about'
-        },
-        {
-          title: 'Контакты',
-          link: '/contacts'
-        },
-        {
-          title: 'Акции',
-          link: '/discounts'
-        }
-      ]
+      isLogin: ''
     }
   },
   computed: {
@@ -176,6 +155,9 @@ export default {
     },
     user () {
       return this.$store.getters['users/info']
+    },
+    tabs () {
+      return this.$store.getters['meta/list']
     }
   },
   methods: {

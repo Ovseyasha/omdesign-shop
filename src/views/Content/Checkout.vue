@@ -197,6 +197,11 @@ export default {
     date (val) {
       this.dateFormatted = this.formatDate(this.date)
     }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + 'ОФОРМЕЛНИЕ ЗАКАЗА'
+    }
   }
 }
 </script>

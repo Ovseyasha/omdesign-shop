@@ -116,6 +116,11 @@ export default {
         console.log(error)
       }
     }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + 'РЕДАКТИРОВАНИЕ ПРОФИЛЯ'
+    }
   }
 }
 </script>

@@ -33,17 +33,27 @@
 
 export default {
   async mounted () {
+    await this.$store.dispatch('meta/read')
+    this.title = this.$store.getters['meta/list'][4].title
+    this.desc = this.$store.getters['meta/list'][4].desc
     await this.$store.dispatch('discounts/read')
     this.loading = false
   },
   data () {
     return {
-      loading: true
+      loading: true,
+      title: '',
+      desc: ''
     }
   },
   computed: {
     discounts () {
       return this.$store.getters['discounts/getList']
+    }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + this.title.toUpperCase()
     }
   }
 }

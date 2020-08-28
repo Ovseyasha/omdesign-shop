@@ -20,11 +20,7 @@ export default {
   name: 'App',
   metaInfo () {
     return {
-      title: 'OMDESIGN-SHOP',
-      meta: [
-        { description: 'Интернет мгазин (сделать изменение через админку)' },
-        { keywords: '(сделать изменение через админку)' }
-      ]
+      titleTemplate: 'OMDESIGN-SHOP %s'
     }
   },
   components: {

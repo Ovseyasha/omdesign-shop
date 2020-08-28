@@ -54,17 +54,27 @@
 export default {
   async mounted () {
     await this.$store.dispatch('blog/read')
+    await this.$store.dispatch('meta/read')
+    this.title = this.$store.getters['meta/list'][1].title
+    this.desc = this.$store.getters['meta/list'][1].desc
     this.loading = false
   },
   data () {
     return {
-      loading: true
+      loading: true,
+      title: '',
+      desc: ''
     }
   },
   computed: {
     articles () {
       const a = this.$store.getters['blog/articles']
       return a.reverse()
+    }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + this.title.toUpperCase()
     }
   }
 }

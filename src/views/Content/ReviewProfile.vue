@@ -118,6 +118,11 @@ export default {
       this.url = src
       this.photoView = true
     }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + 'МОИ ОТЗОВЫ'
+    }
   }
 }
 </script>

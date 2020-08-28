@@ -9,11 +9,7 @@ export default {
       return state.discounts
     },
     readById: state => id => {
-      for (const i in state.discounts) {
-        if (i === id) {
-          return state.discounts[i]
-        }
-      }
+      return state.discounts.find(d => d.id === id)
     }
   },
   mutations: {
@@ -24,18 +20,18 @@ export default {
       state.discounts = payload
     },
     update (state, { discount, id }) {
-      for (const key in state.discounts) {
-        if (key === id) {
-          state.discounts[key] = discount
+      state.discounts.forEach((d, i) => {
+        if (d.id === id) {
+          state.discounts[i] = discount
         }
-      }
+      })
     },
-    delete (state, { discount, id }) {
-      for (const key in state.discounts) {
-        if (key === id) {
-          delete state.discounts[key]
+    delete (state, { id }) {
+      state.discounts.forEach((d, i) => {
+        if (d.id === id) {
+          state.discounts.splice(i, 1)
         }
-      }
+      })
     }
   },
   actions: {
@@ -47,11 +43,12 @@ export default {
           const slideFile = payload.url
           const storagesSlide = await firebase.storage().ref(`discounts/${discount.key}/${slideName}`).put(slideFile)
           const slideUrl = await storagesSlide.ref.getDownloadURL()
-          discount.url = slideUrl
-          discount.fileName = slideName
+          payload.url = slideUrl
+          payload.fileName = slideName
           await firebase.database().ref(`discounts/${discount.key}`).update({ url: slideUrl, fileName: slideName })
         }
-        commit('create', discount)
+        payload.id = discount.key
+        commit('create', payload)
       } catch (error) {
         console.log(error)
       }
@@ -59,7 +56,17 @@ export default {
     async read ({ commit }, payload) {
       try {
         const discounts = (await firebase.database().ref('discounts').once('value')).val()
-        commit('read', discounts)
+        const ud = []
+        if (discounts !== null) {
+          Object.keys(discounts).forEach(key => {
+            const s = discounts[key]
+            ud.push({
+              ...s,
+              id: key
+            })
+          })
+        }
+        commit('read', ud)
       } catch (error) {
         console.log(error)
       }
@@ -78,6 +85,7 @@ export default {
           discount.fileName = slideName
         }
         await firebase.database().ref('discounts').child(id).update(discount)
+        discount.id = id
         commit('update', { discount, id })
       } catch (error) {
         console.log(error)
@@ -89,7 +97,7 @@ export default {
         await firebase.database().ref(`discounts/${id}`).remove()
         commit('delete', { discount, id })
       } catch (error) {
-
+        console.log(error)
       }
     }
   }

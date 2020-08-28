@@ -54,6 +54,12 @@ const routes = [
     component: () => import('@/components/app/Login.vue')
   },
   {
+    path: '/login/resetpassword',
+    name: 'ResetPass',
+    meta: { layout: 'empty' },
+    component: () => import('@/components/app/ResetPass.vue')
+  },
+  {
     path: '/registration',
     name: 'Registration',
     meta: { layout: 'empty' },

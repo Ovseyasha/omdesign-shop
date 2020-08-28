@@ -41,6 +41,11 @@ export default {
   },
   components: {
     ProductCard
+  },
+  metaInfo () {
+    return {
+      title: '| ' + 'ИЗБРАННОЕ'
+    }
   }
 }
 </script>

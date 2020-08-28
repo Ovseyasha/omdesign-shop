@@ -11,10 +11,26 @@ import Discounts from '@/components/Content/Discounts'
 import SalesProducts from '@/components/Content/SalesProducts'
 import LastProducts from '@/components/Content/LastProducts'
 export default {
+  async mounted () {
+    await this.$store.dispatch('meta/read')
+    this.title = this.$store.getters['meta/list'][0].title
+    this.desc = this.$store.getters['meta/list'][0].desc
+  },
   components: {
     Discounts,
     SalesProducts,
     LastProducts
+  },
+  data () {
+    return {
+      title: '',
+      desc: ''
+    }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + this.title.toUpperCase()
+    }
   }
 }
 </script>

@@ -202,6 +202,11 @@ export default {
         console.log(error)
       }
     }
+  },
+  metaInfo () {
+    return {
+      title: '| ' + 'КОРЗИНА'
+    }
   }
 }
 </script>
