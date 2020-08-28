@@ -1,4 +1,5 @@
 import firebase from 'firebase/app'
+/* eslint-disable */
 export default {
   namespaced: true,
   state: {
@@ -20,7 +21,6 @@ export default {
         const meta = (await firebase.database().ref('meta').once('value')).val()
         commit('move', meta)
       } catch (error) {
-
       }
     },
     async update ({ commit }, payload) {
@@ -28,7 +28,6 @@ export default {
         await firebase.database().ref('meta').set(payload)
         commit('move', payload)
       } catch (error) {
-        console.log(error)
         throw error
       }
     }

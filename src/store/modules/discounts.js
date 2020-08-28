@@ -50,7 +50,6 @@ export default {
         payload.id = discount.key
         commit('create', payload)
       } catch (error) {
-        console.log(error)
       }
     },
     async read ({ commit }, payload) {
@@ -68,7 +67,6 @@ export default {
         }
         commit('read', ud)
       } catch (error) {
-        console.log(error)
       }
     },
     async update ({ commit }, { discount, id }) {
@@ -88,7 +86,6 @@ export default {
         discount.id = id
         commit('update', { discount, id })
       } catch (error) {
-        console.log(error)
       }
     },
     async delete ({ commit }, { discount, id }) {
@@ -97,7 +94,6 @@ export default {
         await firebase.database().ref(`discounts/${id}`).remove()
         commit('delete', { discount, id })
       } catch (error) {
-        console.log(error)
       }
     }
   }

@@ -170,7 +170,6 @@ export default {
           isLogin: this.isLogin
         })
       } catch (error) {
-        console.log(error)
       }
     },
     async minusCount (id, count) {
@@ -181,7 +180,6 @@ export default {
           isLogin: this.isLogin
         })
       } catch (error) {
-        console.log(error)
       }
     },
     async deleteProduct (id) {
@@ -191,7 +189,6 @@ export default {
           isLogin: this.isLogin
         })
       } catch (error) {
-        console.log(error)
       }
     },
     async checkout () {
@@ -199,7 +196,6 @@ export default {
         await this.$store.commit('cart/total', this.total)
         this.$router.push('/checkout')
       } catch (error) {
-        console.log(error)
       }
     }
   },

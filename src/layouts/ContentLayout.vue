@@ -176,7 +176,6 @@ export default {
         this.loading = false
         this.$router.push('/')
       } catch (error) {
-        console.log(error)
       }
     }
   }

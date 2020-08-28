@@ -1,6 +1,4 @@
-
 import firebase from 'firebase/app'
-
 export default {
   namespaced: true,
   state: {
@@ -50,7 +48,6 @@ export default {
         await firebase.database().ref('about').set(payload)
         commit('set', payload)
       } catch (error) {
-        console.log(error)
       }
     }
   }

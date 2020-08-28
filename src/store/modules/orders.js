@@ -57,7 +57,6 @@ export default {
         }
         commit('readList', o)
       } catch (error) {
-        console.log(error)
       }
     },
     async readByUserId ({ commit }) {
@@ -67,7 +66,6 @@ export default {
         orders = Object.values(orders)
         commit('readByUserId', orders)
       } catch (error) {
-        console.log(error)
       }
     },
     async create ({ dispatch, commit }, payload) {
@@ -81,7 +79,6 @@ export default {
         await firebase.database().ref('orders').push(order)
         commit('create', order)
       } catch (error) {
-        console.log(error)
       }
     },
     async update ({ commit }, { id, v }) {
@@ -89,7 +86,6 @@ export default {
         await firebase.database().ref(`orders/${id}/state`).set(v)
         commit('update', { id, v })
       } catch (error) {
-        console.log(error)
       }
     },
     async delete ({ commit }, { id }) {
@@ -97,7 +93,6 @@ export default {
         await firebase.database().ref(`orders/${id}`).remove()
         commit('delete', { id })
       } catch (error) {
-        console.log(error)
       }
     }
   }

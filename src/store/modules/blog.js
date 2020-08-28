@@ -52,7 +52,6 @@ export default {
         }
         commit('create', payload)
       } catch (error) {
-        console.log(error)
       }
     },
     async read ({ commit }) {
@@ -70,7 +69,6 @@ export default {
         }
         commit('read', nBlog)
       } catch (error) {
-        console.log(error)
       }
     },
     async update ({ commit }, { article, deletedName }) {
@@ -96,7 +94,6 @@ export default {
         await firebase.database().ref('blog').child(article.id).update(article)
         commit('update', { article })
       } catch (error) {
-        console.log(error)
       }
     },
     async delete ({ commit }, payload) {

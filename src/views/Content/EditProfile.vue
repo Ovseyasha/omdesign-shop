@@ -97,7 +97,6 @@ export default {
         await this.$store.dispatch('users/editProfile', this.user)
         this.loading = false
       } catch (error) {
-        console.log(error)
       }
     },
     async changePass () {
@@ -113,7 +112,6 @@ export default {
         this.modal = false
         this.loading = false
       } catch (error) {
-        console.log(error)
       }
     }
   },

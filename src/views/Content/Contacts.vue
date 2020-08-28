@@ -83,7 +83,6 @@ export default {
       } catch (error) {
         // сделать через глобальный компонент уведомлений!
         this.message = 'Письмо не отправленно.'
-        console.log(error)
       }
     }
   },

@@ -40,7 +40,6 @@ export default {
         payload.id = m.key
         commit('create', payload)
       } catch (error) {
-        console.log(error)
       }
     },
     async read ({ commit }) {
@@ -58,7 +57,6 @@ export default {
         }
         commit('read', newContacts)
       } catch (error) {
-        console.log(error)
       }
     },
     async update ({ commit }, payload) {
@@ -66,7 +64,6 @@ export default {
         await firebase.database().ref(`contact/${payload}`).update({ isNew: false })
         commit('update', payload)
       } catch (error) {
-        console.log(error)
       }
     },
     async delete ({ commit }, payload) {

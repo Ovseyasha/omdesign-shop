@@ -336,7 +336,6 @@ export default {
           isLogin: this.isLogin
         })
       } catch (error) {
-        console.log(error)
       }
     },
     openDialog () {
@@ -366,7 +365,6 @@ export default {
         this.loading = false
         this.reviewWindow = false
       } catch (error) {
-        console.log(error)
       }
     },
     async likeReview (prodId, index, action) {
@@ -378,7 +376,6 @@ export default {
         })
         await this.$store.dispatch('products/read')
       } catch (error) {
-        console.log(error)
       }
     }
   },

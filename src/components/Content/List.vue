@@ -449,7 +449,6 @@ export default {
         await this.$store.dispatch('discounts/delete', { discount: d, id: d.id })
         this.editing = false
       } catch (error) {
-        console.log(error)
       }
     },
     // blog
@@ -459,7 +458,6 @@ export default {
         await this.$store.dispatch('blog/delete', article)
         this.editing = false
       } catch (error) {
-        console.log(error)
       }
     },
     // orders
@@ -474,7 +472,6 @@ export default {
         this.order = o
         this.editing = false
       } catch (error) {
-        console.log(error)
       }
     },
     async deleteOrder (id) {
@@ -492,7 +489,6 @@ export default {
         await this.$store.dispatch('orders/update', { id, v })
         this.editing = false
       } catch (error) {
-        console.log(error)
       }
     },
     // products
@@ -502,7 +498,6 @@ export default {
         await this.$store.dispatch('products/delete', { product })
         this.editing = false
       } catch (error) {
-        console.log(error)
       }
     },
     // category
@@ -517,7 +512,6 @@ export default {
         }
         this.editing = false
       } catch (error) {
-        console.log(error)
       }
     },
     async createCategory () {
@@ -530,7 +524,6 @@ export default {
         this.categoryModal = false
         this.editing = false
       } catch (error) {
-
       }
     },
     async deleteCategory (id) {
@@ -539,7 +532,6 @@ export default {
         await this.$store.dispatch('category/delete', id)
         this.editing = false
       } catch (error) {
-
       }
     }
   }

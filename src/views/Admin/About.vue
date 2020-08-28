@@ -113,7 +113,6 @@ export default {
         await this.$store.dispatch('about/set', this.cells)
         this.loading = false
       } catch (error) {
-        console.log(error)
       }
     },
     changeImg (i, v) {

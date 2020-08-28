@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import store from '../index'
+/* eslint-disable */
 export default {
   namespaced: true,
   state: {
@@ -68,7 +69,6 @@ export default {
         }
         await dispatch('read')
       } catch (error) {
-        console.log(error)
         throw error
       }
     },
@@ -93,7 +93,6 @@ export default {
         // console.log(uProducts)
         commit('read', uProducts)
       } catch (error) {
-        console.log(error)
       }
     },
     async update ({ commit }, { product, id, deletedName }) {
@@ -119,7 +118,6 @@ export default {
         await firebase.database().ref('products').child(id).update(product)
         commit('update', { id, product })
       } catch (error) {
-        console.log(error)
       }
     },
     async delete ({ commit }, { product }) {
@@ -132,7 +130,6 @@ export default {
         await firebase.database().ref(`products/${id}`).remove()
         commit('delete', { id })
       } catch (error) {
-        console.log(error)
       }
     },
     // products feedback
@@ -168,7 +165,6 @@ export default {
         }
         await dispatch('read')
       } catch (error) {
-        console.log(error)
       }
     },
     async readReviewById ({ commit }) {
@@ -188,7 +184,6 @@ export default {
         })
         commit('readReviewById', reviews)
       } catch (error) {
-        console.log(error)
       }
     },
     async likeReview ({ commit, dispatch }, payload) {
@@ -231,7 +226,6 @@ export default {
           await firebase.database().ref(`products/${payload.prodId}/feedback/${payload.index}/likes`).set(likes)
         }
       } catch (error) {
-        console.log(error)
       }
     }
   }

@@ -1,4 +1,5 @@
 import firebase from 'firebase/app'
+/* eslint-disable */
 export default {
   namespaced: true,
   state: {
@@ -47,7 +48,6 @@ export default {
         await firebase.database().ref('users').child(uid).update({ avatar: user.avatar })
         commit('getUid', uid)
       } catch (error) {
-        console.log(error)
         throw error
         // добавить вывод ошибок в modal
       }
@@ -58,7 +58,6 @@ export default {
         await dispatch('getInfo')
       } catch (error) {
         // error logic here
-        console.log(error)
         throw error
       }
     },
@@ -80,7 +79,6 @@ export default {
         }
         commit('getUid', uid)
       } catch (error) {
-        console.log(error)
         throw error
       }
     },
@@ -93,7 +91,6 @@ export default {
         await firebase.database().ref('users').child(uid).update({ wishList: updWishList })
         await dispatch('getInfo')
       } catch (error) {
-        console.log(error)
         throw error
       }
     },
@@ -106,7 +103,6 @@ export default {
         await firebase.database().ref('users').child(uid).update({ wishList: updWishList })
         await dispatch('getInfo')
       } catch (error) {
-        console.log(error)
         throw error
       }
     },
@@ -120,7 +116,6 @@ export default {
         const user = firebase.auth().currentUser
         await user.updatePassword(payload)
       } catch (error) {
-        console.log(error)
       }
     },
     async editProfile ({ dispatch, commit }, payload) {
@@ -134,14 +129,12 @@ export default {
         }
         commit('editProfile', user)
       } catch (error) {
-        console.log(error)
       }
     },
     async reset ({ commit }, payload) {
       try {
         await firebase.auth().sendPasswordResetEmail(payload)
       } catch (error) {
-        console.log(error)
         throw error
       }
     }

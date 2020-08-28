@@ -122,7 +122,6 @@
 <script>
 export default {
   async mounted () {
-    console.log(typeof (this.total))
     await this.$store.dispatch('users/getInfo')
     this.total = await this.$store.getters['cart/total']
     this.info = this.$store.getters['users/info']
@@ -171,13 +170,11 @@ export default {
           products: this.info.productInCart,
           total: this.total
         }
-        console.log(order)
         await this.$store.dispatch('orders/create', order)
         await this.$store.dispatch('cart/clearCart')
         this.loading = false
         this.$router.push('/account')
       } catch (error) {
-        console.log(error)
       }
     },
     formatDate (date) {

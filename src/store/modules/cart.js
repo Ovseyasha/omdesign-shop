@@ -46,7 +46,6 @@ export default {
           }
         }
       } catch (error) {
-        console.log(error)
       }
     },
     async updCart ({ commit }, payload) {
@@ -59,7 +58,6 @@ export default {
           commit('updCart', payload)
         }
       } catch (error) {
-        console.log(error)
       }
     },
     async add ({ dispatch, commit, state }, payload) {
@@ -73,7 +71,6 @@ export default {
         }
         await dispatch('updCart', state.products)
       } catch (error) {
-        console.log(error)
       }
     },
     async delete ({ dispatch, commit, state }, payload) {
@@ -85,7 +82,6 @@ export default {
         }
         await dispatch('updCart', state.products)
       } catch (error) {
-        console.log(error)
       }
     },
     async clearCart ({ dispatch, commit, state }, payload) {
@@ -93,7 +89,6 @@ export default {
         const id = await store.dispatch('users/getUid')
         await firebase.database().ref(`users/${id}/productInCart`).remove()
       } catch (error) {
-        console.log(error)
       }
     },
     async changeCount ({ dispatch, commit, state }, payload) {
@@ -108,7 +103,6 @@ export default {
         }
         await dispatch('updCart', state.products)
       } catch (error) {
-        console.log(error)
       }
     },
     async changeSize ({ dispatch, commit, state }, payload) {
@@ -117,14 +111,11 @@ export default {
           const id = await store.dispatch('users/getUid')
           const list = (await firebase.database().ref(`users/${id}/productInCart`).once('value')).val()
           // list.find(p => p.id === payload.id)
-          // console.log(list.find(p => p.id === payload.id))
           const ind = list.findIndex(p => p.id === payload.id)
-          console.log(ind)
           await firebase.database().ref(`users/${id}/productInCart/${ind}/selectedSize`).set(payload.v)
           await dispatch('loadCart', payload.isLogin)
         }
       } catch (error) {
-        console.log(error)
       }
     }
   }

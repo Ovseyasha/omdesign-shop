@@ -55,7 +55,6 @@ export default {
         this.loading = false
         this.$router.push('/admin/discounts')
       } catch (error) {
-        console.log(error)
       }
     }
   },

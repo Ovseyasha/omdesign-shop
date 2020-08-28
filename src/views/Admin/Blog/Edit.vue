@@ -82,7 +82,6 @@ export default {
         this.loading = false
         this.$router.push('/admin/blog')
       } catch (error) {
-        console.log(error)
       }
     }
   },

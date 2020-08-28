@@ -10,7 +10,6 @@ export default {
     },
     getCategoryName: state => id => {
       return state.categories.find(category => {
-        console.log()
         if (category.id === id) {
           return category
         }
@@ -48,7 +47,6 @@ export default {
           id: cat.key
         })
       } catch (error) {
-
       }
     },
     async read ({ dispatch, commit, state }, payload) {
@@ -70,7 +68,6 @@ export default {
         await firebase.database().ref(`categories/${id}`).set(name)
         commit('update', { name, id })
       } catch (error) {
-        console.log(error)
       }
     },
     async delete ({ commit }, payload) {
@@ -78,7 +75,6 @@ export default {
         await firebase.database().ref(`categories/${payload}`).remove()
         commit('delete', payload)
       } catch (error) {
-
       }
     }
   }

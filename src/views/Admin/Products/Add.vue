@@ -132,7 +132,6 @@ export default {
         this.loading = false
         this.$router.push('/admin/products')
       } catch (error) {
-        console.log(error)
       }
     }
   },
