@@ -53,7 +53,12 @@ export default {
   },
   metaInfo () {
     return {
-      title: '| ' + this.title.toUpperCase()
+      title: '| ' + this.title.toUpperCase(),
+      meta: [{
+        vmid: 'description',
+        name: 'description',
+        content: this.desc
+      }]
     }
   }
 }
